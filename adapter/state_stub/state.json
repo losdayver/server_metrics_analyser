@@ -1,0 +1,39 @@
+{
+    "HostName": "localhost",
+    "Port": "4301",
+    "Identifier": "DefaultCluster-Stub-1",
+    "Hosts": [
+        {
+            "HostName": "host1"
+        },
+        {
+            "HostName": "host2"
+        },
+        {
+            "HostName": "host3"
+        },
+        {
+            "HostName": "host4"
+        }
+    ],
+    "Dials": [
+        {
+            "Name": "Proc_All_%",
+            "Unit": "%",
+            "Threshold": 80,
+            "RunCount": 5 
+        },
+        {
+            "Name": "Mem_%",
+            "Unit": "%",
+            "Threshold": 75,
+            "RunCount": 6 
+        },
+        {
+            "Name": "Swap_Kb",
+            "Unit": "Kb",
+            "Threshold": 3000000,
+            "RunCount": 8 
+        }
+    ]
+}
