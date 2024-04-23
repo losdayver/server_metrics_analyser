@@ -1,7 +1,7 @@
 #%RAML 1.0
 ---
 title: Adapter REST API
-baseUri: http://api.e-bookmobile.com/{version}
+baseUri: adapter-uri/api
 version: v1
 
 types:
@@ -12,12 +12,12 @@ types:
     properties:
       HostName:
         description: |
-          Specify name of the host from wich you want to fetch data
+          Specify name of the Host from wich you want to fetch measurement data
         type: string
         required: true
       DialName:
         description: |
-          Specify name of the dial that is to be measured
+          Specify name of the Dial that is to be measured
         type: string
         required: true
   PostMeasureSentBody:
@@ -25,27 +25,51 @@ types:
     properties:
       HostName:
         description: |
-          Name of the host from which the data was fetched
+          Name of the Name from which the measurement data was fetched
         type: string
         required: true
       DialName:
         description: |
-          Name of the dial that was measured
+          Name of the Dial that was measured
         type: string
         required: true
       Value:
         description: |
-          Value of the mesured dial
+          Value of the measured Dial
         type: number
         required: true
-  HostsListElement:
+  Host:
     type: object
     properties:
       HostName:
         description: |
-          Name of the host
+          Name of the Host
         type: string
         required: true
+  Dial:
+    type: object
+    properties:
+      Name:
+        description: |
+          Name of the Dial
+        type: string
+        required: true
+      Unit:
+        description: |
+          Unit of measurement
+        type: string
+        required: true
+      Threshold:
+        description: |
+          Threshold above which runs are counted
+        type: integer
+        required: true
+      RunCount:
+        description: |
+          Number of measurement values above threshold that are retrieved in a row for incident to occur
+        type: integer
+        required: true
+
 
 
 /hosts:
@@ -55,7 +79,7 @@ types:
       200:
         body:
           application/json:
-            type: HostsListElement
+            type: Host[]
             example: |
               [
                 {
@@ -77,6 +101,34 @@ types:
 
 /dials:
   get:
+    description: Retrieve list of dials supported by the adapter
+    responses:
+      200:
+        body:
+          application/json:
+            type: Dial[]
+            example: |
+              [
+                {
+                    "Name": "Proc_All_%",
+                    "Unit": "%",
+                    "Threshold": 80,
+                    "RunCount": 5 
+                },
+                {
+                    "Name": "Mem_%",
+                    "Unit": "%",
+                    "Threshold": 75,
+                    "RunCount": 6 
+                },
+                {
+                    "Name": "Swap_Kb",
+                    "Unit": "Kb",
+                    "Threshold": 3000000,
+                    "RunCount": 8 
+                }
+              ]
+
 /measure:
   post:
     description: |
