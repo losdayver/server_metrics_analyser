@@ -1,0 +1,142 @@
+#%RAML 1.0
+---
+title: Worker REST API
+baseUri: worker-url/api
+version: v1
+
+types:
+  GenericError:
+    type: string
+  PostCollectStartBody:
+    type: object
+    properties:
+      HostName:
+        description: |
+          Specify name of the Host from wich you want to fetch measurement data. HostName has to be in adapter's hosts list
+        type: string
+        required: true
+      Dial:
+        description: |
+          Specify the Dial that is to be measured. Dial has to be in adapter's dial list
+        type: Dial
+        required: true
+  PostCollectDataBody:
+    type: object
+    properties:
+      SessionID:
+        description: |
+          Specify UUID of a session that is collected by requesting /collect/start
+        type: string
+        required: true
+      AdapterURL:
+        description: |
+          Specify the URL of an adapter from which the data is to be collected
+        type: string
+        required: true
+  Measure:
+    type: object
+    properties:
+      Value:
+        description: |
+          Value of a dial at the moment of making a request
+        type: number
+        required: true
+
+  Host:
+    type: object
+    properties:
+      HostName:
+        description: |
+          Name of the Host
+        type: string
+        required: true
+  Dial:
+    type: object
+    properties:
+      Name:
+        description: |
+          Name of the Dial
+        type: string
+        required: true
+      Unit:
+        description: |
+          Unit of measurement
+        type: string
+        required: true
+
+
+/identifier:
+  get:
+    description: Retrieve identifier that describes version and type of a worker
+    body:
+      text/plain:
+        example: |
+          Generic-worker
+
+/collect:
+  /start:
+    post:
+      description: |
+        Starts a new session for processing data
+      body:
+        application/json:
+          type: PostCollectStartBody
+          example: |
+            {
+              "HostName": "host123",
+              "Dial": {
+                "Name": "Processor_%",
+                "Unit": "%"
+              }
+            }
+      responses:
+        200:
+          description: |
+              Returns session token
+          body:
+            text/plain:
+              type: string
+              example: |
+                "cd920844-0fac-44e1-b39c-08234502c79b"
+        400:
+          description: |
+            Returns descriptive error string
+          body:
+            text/plain:
+              type: string
+              example: |
+                "Some error occured"
+  
+  /data:
+    post:
+      description: |
+        Retreive data from specified adapter. Session MUST be initialized before data collection starts
+      body:
+        application/json:
+          type: PostCollectDataBody
+          example: |
+            {
+              "SessionID": "cd920844-0fac-44e1-b39c-08234502c79b",
+              "AdapterURL": "http://adapter-url/api/measure"
+            }
+      responses:
+        200:
+          description: |
+              Returns a Measure
+          body:
+            application/json:
+              type: Measure
+              example: |
+                {
+                  "Value": 82.153
+                }
+        400:
+          description: |
+            Returns descriptive error string
+          body:
+            text/plain:
+              type: string
+              example: |
+                "Some error occured"
+  /stop:
+    post:

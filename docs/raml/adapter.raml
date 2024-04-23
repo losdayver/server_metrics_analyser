@@ -1,7 +1,7 @@
 #%RAML 1.0
 ---
 title: Adapter REST API
-baseUri: adapter-uri/api
+baseUri: adapter-url/api
 version: v1
 
 types:
@@ -161,10 +161,9 @@ types:
               }
       400:
         body:
+          description: |
+            Returns descriptive error string
           text/plain:
+            type: string
             example: |
-              invalid HostName
-
-
-
-
+              "Some error occured"
