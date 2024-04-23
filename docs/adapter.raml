@@ -1,0 +1,112 @@
+#%RAML 1.0
+---
+title: Adapter REST API
+baseUri: http://api.e-bookmobile.com/{version}
+version: v1
+
+types:
+  GenericError:
+    type: string
+  PostMeasureReceivedBody:
+    type: object
+    properties:
+      HostName:
+        description: |
+          Specify name of the host from wich you want to fetch data
+        type: string
+        required: true
+      DialName:
+        description: |
+          Specify name of the dial that is to be measured
+        type: string
+        required: true
+  PostMeasureSentBody:
+    type: object
+    properties:
+      HostName:
+        description: |
+          Name of the host from which the data was fetched
+        type: string
+        required: true
+      DialName:
+        description: |
+          Name of the dial that was measured
+        type: string
+        required: true
+      Value:
+        description: |
+          Value of the mesured dial
+        type: number
+        required: true
+  HostsListElement:
+    type: object
+    properties:
+      HostName:
+        description: |
+          Name of the host
+        type: string
+        required: true
+
+
+/hosts:
+  get:
+    description: Retrieve list of hosts supported by the adapter
+    responses:
+      200:
+        body:
+          application/json:
+            type: HostsListElement
+            example: |
+              [
+                {
+                  "HostName": "host1"
+                },
+                {
+                  "HostName": "host2"
+                },
+                {
+                  "HostName": "host3"
+                },
+                {
+                  "HostName": "host4"
+                }
+              ]
+
+  /{host_name}:
+    get:
+
+/dials:
+  get:
+/measure:
+  post:
+    description: |
+      Used to get measurement of a specified dial on a specified host
+    body:
+      application/json:
+        type: PostMeasureReceivedBody
+        example: |
+          {
+            "HostName": "host123",
+            "DialName": "Processor_%"
+          }
+    responses:
+      200:
+        body:
+          application/json:
+            type: PostMeasureSentBody
+            example: |
+              {
+                "HostName": "host123",
+                "DialName": "Processor_%",
+                "Value": 10.182
+              }
+      400:
+        body:
+          application/json:
+            type: GenericError
+            example: |
+              invalid HostName
+
+
+
+

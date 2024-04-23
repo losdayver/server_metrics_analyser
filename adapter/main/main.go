@@ -30,7 +30,7 @@ func main() {
 	mux.HandleFunc("GET /api/identifier/{$}", ApiWrapper(handlers.GetIdentifierHandler))
 
 	mux.HandleFunc("GET /api/hosts/{$}", ApiWrapper(handlers.GetHostsHandler))
-	mux.HandleFunc("GET /api/host/{host_id}", ApiWrapper(handlers.GetHostHandler))
+	mux.HandleFunc("GET /api/hosts/{host_id}", ApiWrapper(handlers.GetHostHandler))
 
 	mux.HandleFunc("GET /api/dials/{$}", ApiWrapper(handlers.GetDialsHandler))
 	mux.HandleFunc("POST /api/measure/{$}", ApiWrapper(handlers.PostMeasureHandler))
