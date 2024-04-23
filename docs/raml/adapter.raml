@@ -71,6 +71,13 @@ types:
         required: true
 
 
+/identifier:
+  get:
+    description: Retrieve identifier that describes what server cluster the adapter is attached to
+    body:
+      text/plain:
+        example: |
+          Generic-cluster-adapter
 
 /hosts:
   get:
@@ -96,8 +103,8 @@ types:
                 }
               ]
 
-  /{host_name}:
-    get:
+  # /{host_name}:
+  #   get:
 
 /dials:
   get:
@@ -154,8 +161,7 @@ types:
               }
       400:
         body:
-          application/json:
-            type: GenericError
+          text/plain:
             example: |
               invalid HostName
 
