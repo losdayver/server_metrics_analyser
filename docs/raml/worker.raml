@@ -7,19 +7,22 @@ version: v1
 types:
   GenericError:
     type: string
+
   PostCollectStartBody:
     type: object
     properties:
       HostName:
         description: |
-          Specify name of the Host from wich you want to fetch measurement data. HostName has to be in adapter's hosts list
+          Specify name of the host from wich you want to fetch measurement data. HostName has to be in adapter's hosts list
         type: string
         required: true
-      Dial:
+
+      Dials:
         description: |
-          Specify the Dial that is to be measured. Dial has to be in adapter's dial list
-        type: Dial
+          Specify the list of dials from which data will be measured. All dials have to be in adapter's dial list
+        type: Dial[]
         required: true
+
   PostCollectDataBody:
     type: object
     properties:
@@ -28,28 +31,13 @@ types:
           Specify UUID of a session that is collected by requesting /collect/start
         type: string
         required: true
+
       AdapterURL:
         description: |
-          Specify the URL of an adapter from which the data is to be collected
+          Specify the URL of an adapter from which the data will be collected
         type: string
-        required: true
-  Measure:
-    type: object
-    properties:
-      Value:
-        description: |
-          Value of a dial at the moment of making a request
-        type: number
         required: true
 
-  Host:
-    type: object
-    properties:
-      HostName:
-        description: |
-          Name of the Host
-        type: string
-        required: true
   Dial:
     type: object
     properties:
@@ -77,17 +65,26 @@ types:
   /start:
     post:
       description: |
-        Starts a new session for processing data
+        Starts a new session for processing data retreived from adapters.
+        Calling /collect/data with token of the session will make worker
+        request data from adapter with "query parameters" specifid at this 
+        initialization step
       body:
         application/json:
           type: PostCollectStartBody
           example: |
             {
               "HostName": "host123",
-              "Dial": {
-                "Name": "Processor_%",
-                "Unit": "%"
-              }
+              "Dials": [
+                {
+                  "Name": "Processor_%",
+                  "Unit": "%"
+                },
+                {
+                  "Name": "Memory_%",
+                  "Unit": "%"
+                }
+              ]
             }
       responses:
         200:
@@ -103,14 +100,14 @@ types:
             Returns descriptive error string
           body:
             text/plain:
-              type: string
+              type: GenericError
               example: |
                 "Some error occured"
   
   /data:
     post:
       description: |
-        Retreive data from specified adapter. Session MUST be initialized before data collection starts
+        Instructs worker to retrieve and process data from post /api/measure url of an adapter
       body:
         application/json:
           type: PostCollectDataBody
@@ -122,14 +119,7 @@ types:
       responses:
         200:
           description: |
-              Returns a Measure
-          body:
-            application/json:
-              type: Measure
-              example: |
-                {
-                  "Value": 82.153
-                }
+            Empty body
         400:
           description: |
             Returns descriptive error string

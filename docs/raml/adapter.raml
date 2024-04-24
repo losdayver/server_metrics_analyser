@@ -7,19 +7,22 @@ version: v1
 types:
   GenericError:
     type: string
+
   PostMeasureReceivedBody:
     type: object
     properties:
       HostName:
         description: |
-          Specify name of the Host from wich you want to fetch measurement data
+          Specify name of the Host from wich you want to fetch measurements
         type: string
         required: true
-      DialName:
+
+      DialNames:
         description: |
-          Specify name of the Dial that is to be measured
-        type: string
+          Specify names of dials that are going to be measured
+        type: string[]
         required: true
+
   PostMeasureSentBody:
     type: object
     properties:
@@ -28,16 +31,27 @@ types:
           Name of the Name from which the measurement data was fetched
         type: string
         required: true
+
+      Measures:
+        description: |
+          List of measures
+        type: Measure[]
+        required: true
+
+  Measure:
+    type: object
+    properties:
       DialName:
         description: |
-          Name of the Dial that was measured
+          Name of the dial
         type: string
         required: true
       Value:
         description: |
-          Value of the measured Dial
+          Value that was measured
         type: number
         required: true
+
   Host:
     type: object
     properties:
@@ -139,14 +153,17 @@ types:
 /measure:
   post:
     description: |
-      Used to get measurement of a specified dial on a specified host
+      Used to get measurement of a specified dials on a specified host
     body:
       application/json:
         type: PostMeasureReceivedBody
         example: |
           {
-            "HostName": "host123",
-            "DialName": "Processor_%"
+            "HostName": "host4",
+            "DialNames": [
+              "Processor_%",
+              "Memory_%"
+            ]
           }
     responses:
       200:
@@ -155,15 +172,23 @@ types:
             type: PostMeasureSentBody
             example: |
               {
-                "HostName": "host123",
-                "DialName": "Processor_%",
-                "Value": 10.182
+                "HostName": "host4",
+                "Measures": [
+                  {
+                    "DialName": "Processor_%",
+                    "Value": 110.1287328
+                  },
+                  {
+                    "DialName": "Memory_%",
+                    "Value": 78.398273
+                  }
+                ]
               }
       400:
         body:
           description: |
             Returns descriptive error string
           text/plain:
-            type: string
+            type: GenericError
             example: |
               "Some error occured"

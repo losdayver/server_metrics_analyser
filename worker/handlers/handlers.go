@@ -4,10 +4,8 @@ import (
 	"bytes"
 	"data_analysis/worker/state"
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
-	"time"
 
 	"github.com/gofrs/uuid/v5"
 )
@@ -30,11 +28,11 @@ func PostCollectStartHandler(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&reqBody)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, "invalid body (parse error)", http.StatusBadRequest)
 		return
 	}
 
-	sessionToken := state.Sessions.New(reqBody.HostName, reqBody.Dial)
+	sessionToken := state.Sessions.New(reqBody.HostName, reqBody.Dials)
 
 	w.Write([]byte(sessionToken.String()))
 }
@@ -45,16 +43,15 @@ func PostCollectStopHandler(w http.ResponseWriter, r *http.Request) {
 
 func PostCollectDataHandler(w http.ResponseWriter, r *http.Request) {
 	var reqBody PostCollectDataBody
-
 	err := json.NewDecoder(r.Body).Decode(&reqBody)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, "invalid body (parse error)", http.StatusBadRequest)
 		return
 	}
 
 	sessionID, err := uuid.FromString(reqBody.SessionID)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, "invalid UUID (parse error)", http.StatusBadRequest)
 		return
 	}
 
@@ -64,10 +61,13 @@ func PostCollectDataHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var reqAdapterBody PostAdapterMeasureBody
+	reqAdapterBody := ReqAdapterMeasure{
+		HostName: session.HostName,
+	}
 
-	reqAdapterBody.DialName = session.Dial.Name
-	reqAdapterBody.HostName = session.HostName
+	for _, dialMeasures := range session.SessionItems {
+		reqAdapterBody.DialNames = append(reqAdapterBody.DialNames, dialMeasures.Dial.Name)
+	}
 
 	reqAdapterBodyJson, err := json.Marshal(reqAdapterBody)
 	if err != nil {
@@ -83,23 +83,21 @@ func PostCollectDataHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var measure state.Measure
-
-	resAdapterBody, err := io.ReadAll(resAdapter.Body)
+	postAdapterMeasureBodyRes, err := io.ReadAll(resAdapter.Body)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	err = json.NewDecoder(bytes.NewBuffer(resAdapterBody)).Decode(&measure)
+	var resAdapterBody ResAdapterMeasure
+
+	err = json.NewDecoder(bytes.NewBuffer(postAdapterMeasureBodyRes)).Decode(&resAdapterBody)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	measure.DateTime = time.Now()
+	state.Sessions.AddMeasures(sessionID, resAdapterBody.Measures)
 
-	session.Measures = append(session.Measures, measure)
-
-	fmt.Println(session.Measures)
+	w.WriteHeader(200)
 }
