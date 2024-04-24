@@ -21,3 +21,5 @@ func Init() {
 		panic("invalid configuration provided in state.json!")
 	}
 }
+
+var Incidents []Incident = make([]Incident, 0)

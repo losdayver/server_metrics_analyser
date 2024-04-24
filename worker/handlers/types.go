@@ -20,8 +20,9 @@ type ResAdapterMeasure struct {
 
 // Represents a body that is sent to the worker to initiate session
 type PostCollectStartBody struct {
-	HostName string
-	Dials    []state.Dial
+	HostName          string
+	AdapterIdentifier string
+	Dials             []state.Dial
 }
 
 // Represents a body that is sent to the worker to make it send a request to a specified adapter

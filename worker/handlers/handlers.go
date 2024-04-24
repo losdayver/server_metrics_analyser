@@ -32,7 +32,7 @@ func PostCollectStartHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	sessionToken := state.Sessions.New(reqBody.HostName, reqBody.Dials)
+	sessionToken := state.Sessions.New(reqBody.HostName, reqBody.AdapterIdentifier, reqBody.Dials)
 
 	w.Write([]byte(sessionToken.String()))
 }
@@ -100,4 +100,10 @@ func PostCollectDataHandler(w http.ResponseWriter, r *http.Request) {
 	state.Sessions.AddMeasures(sessionID, resAdapterBody.Measures)
 
 	w.WriteHeader(200)
+}
+
+func GetIncidentsHandler(w http.ResponseWriter, r *http.Request) {
+	jsonData, _ := json.Marshal(state.Incidents)
+
+	w.Write(jsonData)
 }

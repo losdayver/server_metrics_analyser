@@ -1,0 +1,23 @@
+{
+  "type": "module",
+  "name": "controller",
+  "version": "1.0.0",
+  "description": "Controller service for managing sessions between adapters and workers",
+  "main": "index.mjs",
+  "scripts": {
+    "dev": "nodemon",
+    "test": "jest"
+  },
+  "author": "losdayver",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.6.8",
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "joi": "^17.13.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "nodemon": "^3.1.0"
+  }
+}

@@ -17,6 +17,12 @@ types:
         type: string
         required: true
 
+      AdapterIdentifier:
+        description: |
+          Identifier of an adapter. Used as a field in incident reports  
+        type: string
+        required: true
+
       Dials:
         description: |
           Specify the list of dials from which data will be measured. All dials have to be in adapter's dial list
@@ -46,11 +52,52 @@ types:
           Name of the Dial
         type: string
         required: true
+      
+      Threshold:
+        description: |
+          Threshold value above which run counter is incremented
+        type: string
+        required: true
+
       Unit:
         description: |
           Unit of measurement
         type: string
         required: true
+      
+      RunCount:
+        description: |
+          Count of occurences of value being above threshold to be concidered an incident
+        type: string
+        required: true
+  
+  Incident:
+    type: object
+    properties:
+      HostName:
+        description: |
+          Name of the host
+        type: string
+        required: true
+
+      AdapterIdentifier:
+        description: |
+          Identifier of an adapter
+        type: string
+        required: true
+
+      DateTime:
+        description: |
+          Time and date of incident occurance
+        type: string
+        required: true
+
+      Dial:
+        description: |
+          Information about dial
+        type: Dial
+        required: true
+
 
 
 /identifier:
@@ -60,6 +107,52 @@ types:
       text/plain:
         example: |
           Generic-worker
+
+/incidents:
+  get:
+    responses:
+      200:
+        description: |
+          Retreive list of incidents
+        body:
+          application/json:
+            type: Incident[]
+            example: |
+              [
+                {
+                  "HostName": "host1",
+                  "AdapterIdentifier": "Adapter-Generic-Cluster",
+                  "DateTime": "2024-04-24T16:51:40.657204+03:00",
+                  "Dial": {
+                    "Name": "Proc_All_%",
+                    "Unit": "%",
+                    "Threshold": 65.3,
+                    "RunCount": 4
+                  }
+                },
+                {
+                  "HostName": "host1",
+                  "AdapterIdentifier": "Adapter-Generic-Cluster",
+                  "DateTime": "2024-04-24T16:51:40.77794+03:00",
+                  "Dial": {
+                    "Name": "Proc_All_%",
+                    "Unit": "%",
+                    "Threshold": 65.3,
+                    "RunCount": 4
+                  }
+                },
+                {
+                  "HostName": "host1",
+                  "AdapterIdentifier": "Adapter-Generic-Cluster",
+                  "DateTime": "2024-04-24T16:51:41.291331+03:00",
+                  "Dial": {
+                    "Name": "Proc_All_%",
+                    "Unit": "%",
+                    "Threshold": 65.3,
+                    "RunCount": 4
+                  }
+                }
+              ]
 
 /collect:
   /start:
@@ -75,14 +168,19 @@ types:
           example: |
             {
               "HostName": "host123",
+              "AdapterIdentifier": "Adapter-Generic-Cluster",
               "Dials": [
                 {
                   "Name": "Processor_%",
-                  "Unit": "%"
+                  "Threshold": 65.3,
+                  "Unit": "%",
+                  "RunCount": 12
                 },
                 {
                   "Name": "Memory_%",
-                  "Unit": "%"
+                  "Threshold": 89.3,
+                  "Unit": "%",
+                  "RunCount": 4
                 }
               ]
             }
