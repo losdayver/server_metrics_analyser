@@ -116,9 +116,6 @@ class State {
         }
 
         let responseCollectStart;
-
-        console.log(`http://${worker.hostName}:${worker.port}/api/collect/start/`);
-
         try {
             responseCollectStart = await axios({
                 method: 'post',
