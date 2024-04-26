@@ -2,8 +2,13 @@ import express from 'express'
 import apiRouter from './routers/api.mjs'
 import {State} from './persistance/state.mjs'
 import cors from 'cors'
+import process from 'process'
 
-const port = 4321;
+let port = 4321;
+
+if (process.argv.length > 2) {
+	port = process.argv[2];
+}
 
 var app = express();
 
@@ -13,5 +18,5 @@ app.use('/api', apiRouter);
 app.use(cors);
 
 app.listen(port, () => {
-	console.log(`server listening on ${port}!`);
+	console.log(`Starting Controller on port '${port}!'`);
 });

@@ -1,13 +1,15 @@
 cd ./adapter
 go mod tidy
 go build -o exec main/main.go
-echo adapter ready
+echo Building Adapter finished
 
 cd ../worker
 go mod tidy
 go build -o exec main/main.go
-echo worker ready
+echo Building Worker finished
 
 cd ../controller
 npm install
-echo contoller ready
+echo Building Controller finished
+
+echo All ready
