@@ -29,6 +29,9 @@ cd ../controller
 node index.mjs 4321 &
 pids+="$! "
 
+echo All services ready
+echo
+
 sleep 1
 
 for i in {1..4}; do
@@ -36,6 +39,7 @@ for i in {1..4}; do
         \"HostName\": \"localhost\",
         \"Port\": \"430$i\"
     }" -H "Content-Type: application/json"
+    echo
 done
 
 for i in {1..4}; do
@@ -43,6 +47,7 @@ for i in {1..4}; do
         \"HostName\": \"localhost\",
         \"Port\": \"431$i\"
     }" -H "Content-Type: application/json"
+    echo
 done
 
 # Wait for all the executables to finish

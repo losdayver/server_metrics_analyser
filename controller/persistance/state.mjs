@@ -1,11 +1,12 @@
-import crypto from 'crypto';
-import axios from 'axios';
+import crypto from "crypto";
+import axios from "axios";
 
 class State {
     constructor() {
         this.clusters = [];
         this.workers = [];
         this.routines = [];
+        this.routineLoopRunning = false;
     }
 
     getWorkers() {
@@ -25,57 +26,74 @@ class State {
         for (let cluster of this.clusters) {
             for (let adapter of cluster.adapters) {
                 if (adapter.hostName === hostName && adapter.port === port) {
-                    throw new Error("adapter with given hostname and port is already registered");
+                    throw new Error(
+                        "adapter with given hostname and port is already registered"
+                    );
                 }
             }
         }
 
         let responseIdentifier;
         try {
-            responseIdentifier = await axios.get(`http://${hostName}:${port}/api/identifier`);
-        }
-        catch (err) {
-            throw new Error('adapter is not availible');
+            responseIdentifier = await axios.get(
+                `http://${hostName}:${port}/api/identifier`
+            );
+        } catch (err) {
+            throw new Error("adapter is not availible");
         }
 
         let identifier = responseIdentifier.data;
         let adapter = new Adapter(hostName, port, identifier);
-        let cluster = this.clusters.find(cluster => cluster.identifier === identifier);
+        let cluster = this.clusters.find(
+            (cluster) => cluster.identifier === identifier
+        );
 
         if (cluster) {
             cluster.adapters.push(adapter);
-        }
-        else {
+        } else {
             let cluster;
             let responseHosts;
             let responseDials;
             try {
-                responseHosts = await axios.get(`http://${hostName}:${port}/api/hosts`);
-                responseDials = await axios.get(`http://${hostName}:${port}/api/dials`);
+                responseHosts = await axios.get(
+                    `http://${hostName}:${port}/api/hosts`
+                );
+                responseDials = await axios.get(
+                    `http://${hostName}:${port}/api/dials`
+                );
 
-                cluster = new Cluster(identifier, responseDials.data, responseHosts.data, [adapter]);
+                cluster = new Cluster(
+                    identifier,
+                    responseDials.data,
+                    responseHosts.data,
+                    [adapter]
+                );
 
                 this.clusters.push(cluster);
-            }
-            catch (err) {
-                throw new Error('invalid data returned from adapter when appending to list');
+            } catch (err) {
+                throw new Error(
+                    "invalid data returned from adapter when appending to list"
+                );
             }
         }
     }
 
     async addWorker(hostName, port) {
-        this.workers.find(worker => {
+        this.workers.find((worker) => {
             if (worker.hostName === hostName && worker.port === port) {
-                throw new Error("worker with given hostname and port is already registered");
+                throw new Error(
+                    "worker with given hostname and port is already registered"
+                );
             }
         });
-        
+
         let response;
         try {
-            response = await axios.get(`http://${hostName}:${port}/api/identifier`);
-        }
-        catch (err) {
-            throw new Error('worker is not availible');
+            response = await axios.get(
+                `http://${hostName}:${port}/api/identifier`
+            );
+        } catch (err) {
+            throw new Error("worker is not availible");
         }
 
         let worker = new Worker(hostName, port, response.data, response.data);
@@ -83,29 +101,43 @@ class State {
         this.workers.push(worker);
     }
 
-    async addRoutine(clusterIdentifier, workerHostName, workerPort, dialNames, clusterHostName) {
-        let cluster = this.clusters.find(cluster => cluster.identifier === clusterIdentifier);
+    async addRoutine(
+        clusterIdentifier,
+        workerHostName,
+        workerPort,
+        dialNames,
+        clusterHostName
+    ) {
+        let cluster = this.clusters.find(
+            (cluster) => cluster.identifier === clusterIdentifier
+        );
         if (!cluster) {
-            throw new Error('non-existent cluster identifier');
+            throw new Error("non-existent cluster identifier");
         }
 
-        let host = cluster.hosts.find(host => host.HostName === clusterHostName);
+        let host = cluster.hosts.find(
+            (host) => host.HostName === clusterHostName
+        );
         if (!host) {
-            throw new Error('specified host does not exist');
+            throw new Error("specified host does not exist");
         }
 
-        let worker = this.workers.find(worker => 
-            worker.hostName === workerHostName && worker.port === workerPort);
+        let worker = this.workers.find(
+            (worker) =>
+                worker.hostName === workerHostName && worker.port === workerPort
+        );
         if (!worker) {
-            throw new Error('worker has not been registered');
+            throw new Error("worker has not been registered");
         }
 
         let dials = [];
         for (let dialName of dialNames) {
-            let dial = cluster.dials.find(dial => dialName === dial.Name);
+            let dial = cluster.dials.find((dial) => dialName === dial.Name);
 
             if (!dial) {
-                throw new Error(`dial ${dialName} is not supported by the cluster`);
+                throw new Error(
+                    `dial ${dialName} is not supported by the cluster`
+                );
             }
 
             dials.push(dial);
@@ -118,37 +150,64 @@ class State {
         let responseCollectStart;
         try {
             responseCollectStart = await axios({
-                method: 'post',
+                method: "post",
                 url: `http://${worker.hostName}:${worker.port}/api/collect/start/`,
                 headers: {
-                    'Content-Type': 'application/json'
-                }, 
+                    "Content-Type": "application/json",
+                },
                 data: {
                     HostName: clusterHostName,
                     AdapterIdentifier: clusterIdentifier,
-                    Dials: dials
-                }
-            });  
-        }
-        catch (err) {
-            throw new Error('worker is not availible');
+                    Dials: dials,
+                },
+            });
+        } catch (err) {
+            throw new Error("worker is not availible");
         }
 
-        let routine = new Routine(clusterIdentifier, worker, dials, responseCollectStart.data);
+        let routine = new Routine(
+            clusterIdentifier,
+            worker,
+            dials,
+            responseCollectStart.data
+        );
 
         this.routines.push(routine);
     }
 
-    removeAdapter() {
+    async startRoutineLoop() {
+        if (this.routineLoopRunning) {
+            return;
+        }
 
+        this.routineLoopRunning = true;
+
+        while (this.routineLoopRunning) {
+            await new Promise((resolve) => setTimeout(resolve, 100));
+            this.runRoutines();
+        }
     }
 
-    removeWorker() {
-        
+    stopRoutineLoop() {
+        this.routineLoopRunning = false;
     }
 
-    testAliveAll() {
+    async runRoutines() {
+        for (let routine of [...this.routines]) {
+            if (!routine.broken) {
+                let cluster = this.clusters.find(
+                    (cluster) =>
+                        cluster.identifier === routine.clusterIdentifier
+                );
 
+                let randomAdapter = cluster.adapters.at(
+                    Math.floor(Math.random() * cluster.adapters.length)
+                );
+
+                // Executing routine
+                routine.execute(randomAdapter);
+            }
+        }
     }
 }
 
@@ -158,6 +217,35 @@ class Routine {
         this.worker = worker;
         this.dials = dials;
         this.sessionID = sessionID;
+        this.executing = false;
+        this.broken = false;
+        this.enabled = false;
+    }
+
+    async execute(adapter) {
+        if (this.executing == true) {
+            return;
+        }
+
+        this.executing = true;
+
+        try {
+            await axios({
+                method: "post",
+                url: `http://${this.worker.hostName}:${this.worker.port}/api/collect/data/`,
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                data: {
+                    SessionID: this.sessionID,
+                    AdapterURL: `http://${adapter.hostName}:${adapter.port}/api/measure/`,
+                },
+            });
+        } catch (err) {
+            console.log(err);
+        }
+
+        this.executing = false;
     }
 }
 
@@ -174,7 +262,7 @@ class Adapter {
     constructor(hostName, port, identifier) {
         this.hostName = hostName;
         this.port = port;
-        this.dead = true;
+        this.dead = false;
         this.identifier = identifier;
     }
 
@@ -185,13 +273,11 @@ class Worker {
     constructor(hostName, port, identifier) {
         this.hostName = hostName;
         this.port = port;
-        this.dead = true;
+        this.dead = false;
         this.identifier = identifier;
     }
 
     testAlive() {}
 }
 
-export {
-    State
-}
+export { State };

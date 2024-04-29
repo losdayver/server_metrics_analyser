@@ -41,6 +41,6 @@ func main() {
 
 	mux.HandleFunc("OPTIONS /api/", handlers.OptionsCorsHandler)
 
-	fmt.Printf("Starting Adapter '%s' on port '%s'\n", state.CurrentConfig.Identifier, state.CurrentConfig.Port)
+	fmt.Printf("Starting Worker '%s' on port '%s'\n", state.CurrentConfig.Identifier, state.CurrentConfig.Port)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf("%s:%s", state.CurrentConfig.HostName, state.CurrentConfig.Port), mux))
 }
