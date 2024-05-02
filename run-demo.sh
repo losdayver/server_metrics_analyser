@@ -26,7 +26,7 @@ done
 cd ../controller
 
 # Run the controller executable
-node index.mjs 4321 &
+node main.mjs 4321 &
 pids+="$! "
 
 echo All services ready
@@ -36,7 +36,7 @@ sleep 1
 
 for i in {1..4}; do
     curl -X POST http://127.0.0.1:4321/api/clusters/ -d "{
-        \"HostName\": \"localhost\",
+        \"HostName\": \"127.0.0.1\",
         \"Port\": \"430$i\"
     }" -H "Content-Type: application/json"
     echo
@@ -44,7 +44,7 @@ done
 
 for i in {1..4}; do
     curl -X POST http://127.0.0.1:4321/api/workers/ -d "{
-        \"HostName\": \"localhost\",
+        \"HostName\": \"127.0.0.1\",
         \"Port\": \"431$i\"
     }" -H "Content-Type: application/json"
     echo

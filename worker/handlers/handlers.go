@@ -103,7 +103,17 @@ func PostCollectDataHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetIncidentsHandler(w http.ResponseWriter, r *http.Request) {
-	jsonData, _ := json.Marshal(state.Incidents)
+	jsonData, _ := json.Marshal(state.Incidents.Incidents)
 
 	w.Write(jsonData)
+}
+
+func PostIncidentsHandler(w http.ResponseWriter, r *http.Request) {
+	jsonData, _ := json.Marshal(state.Incidents.Incidents)
+
+	_, err := w.Write(jsonData)
+
+	if err != nil {
+		state.Incidents.Clear()
+	}
 }

@@ -137,7 +137,7 @@ func (sessionsHashMap SessionHashMap) AddMeasures(id uuid.UUID, measures []Measu
 				}
 
 				if session.SessionItems[i].RunCounter >= session.SessionItems[i].Dial.RunCount {
-					Incidents = append(Incidents, Incident{
+					Incidents.Push(Incident{
 						HostName:          session.HostName,
 						AdapterIdentifier: session.AdapterIdentifier,
 						DateTime:          time.Now(),
@@ -152,4 +152,21 @@ func (sessionsHashMap SessionHashMap) AddMeasures(id uuid.UUID, measures []Measu
 	}
 
 	return nil
+}
+
+type IncidentList struct {
+	Incidents []Incident
+	Mutex   *sync.Mutex
+}
+
+func (incidentList IncidentList) Push(incident Incident) {
+	incidentList.Mutex.Lock()
+	defer incidentList.Mutex.Unlock()
+	incidentList.Incidents = append(incidentList.Incidents, incident)
+}
+
+func (incidentList IncidentList) Clear() {
+	incidentList.Mutex.Lock()
+	defer incidentList.Mutex.Unlock()
+	incidentList.Incidents = make([]Incident, 0)
 }

@@ -1,0 +1,39 @@
+.chart-cluster {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.chart {
+    padding: 20px;
+    margin: 20px;
+    height: 300px;
+    flex: 1;
+
+    flex-direction: column;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.chart canvas {
+    margin: 10px;
+}
+
+.chart table {
+    font-size: 0.75rem;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.chart th,
+.chart td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.chart th {
+    background-color: #f2f2f2;
+}

@@ -1,0 +1,63 @@
+/* Reset some default styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body,
+html {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    height: 100vh;
+}
+
+#main-container {
+    display: flex;
+    flex-direction: row;
+    height: 100vh; /* Set the container to full viewport height */
+}
+
+#main-sidebar {
+    background-color: #333;
+    color: #fff;
+    width: 200px;
+    padding: 0;
+    height: 100vh;
+}
+
+#main-sidebar ul {
+    list-style-type: none;
+    margin-top: 10px;
+}
+
+#main-sidebar li {
+    margin-bottom: 10px;
+    padding-left: 20px;
+}
+
+#main-sidebar a {
+    color: #fff;
+    text-decoration: none;
+}
+
+#main-sidebar a:hover {
+    color: #ccc;
+}
+
+.main-sidebar-li-checked {
+    background-color: #fff;
+    color: #000;
+}
+
+.main-sidebar-li-checked a {
+    color: #000 !important;
+}
+
+#main-content {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    flex-grow: 1; /* Make the content area take up remaining space */
+    overflow-y: auto;
+}

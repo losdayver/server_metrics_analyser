@@ -3,6 +3,7 @@ package state
 import (
 	"encoding/json"
 	"os"
+	"sync"
 )
 
 var CurrentConfig Config
@@ -22,4 +23,8 @@ func Init() {
 	}
 }
 
-var Incidents []Incident = make([]Incident, 0)
+//var Incidents []Incident = make([]Incident, 0)
+var Incidents IncidentList = IncidentList{
+	Incidents: make([]Incident, 0),
+	Mutex:   &sync.Mutex{},
+}

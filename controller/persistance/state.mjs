@@ -90,7 +90,7 @@ class State {
         let response;
         try {
             response = await axios.get(
-                `http://${hostName}:${port}/api/identifier`
+                `http://${hostName}:${port}/api/identifier/`
             );
         } catch (err) {
             throw new Error("worker is not availible");

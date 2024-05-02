@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="styles/styles.css" />
+        <link rel="stylesheet" href="styles/dashboard.css" />
+        <title>Document</title>
+    </head>
+    <body>
+        <script src="scripts/external/jquery.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+        <script src="scripts/main.js"></script>
+        <div id="main-container">
+            <nav id="main-sidebar">
+                <ul>
+                    <li <% if (mainContatentPageName === "welcome") { %>
+                            class="main-sidebar-li-checked"   
+                        <% } %>>
+                        <a href="/welcome">Welcome</a>
+                    </li>
+
+                    <li <% if (mainContatentPageName === "dashboard") { %>
+                            class="main-sidebar-li-checked"   
+                        <% } %>>
+                        <a href="/dashboard">Dashboard</a>
+                    </li>
+
+                    <li <% if (mainContatentPageName === "views") { %>
+                            class="main-sidebar-li-checked"   
+                        <% } %>>
+                        <details <% if (["views-adapters", 
+                                        "views-workers",
+                                        "views-sessions",
+                                        "views-incidents"]
+                                        .includes(mainContatentPageName)) { %>
+                                    open
+                                <% } %>>
+                            <summary>Views</summary>
+                            <ul>
+                                <li <% if (mainContatentPageName === "views-adapters") { %>
+                                        class="main-sidebar-li-checked"   
+                                    <% } %>>
+                                    <a href="/views-adapters">Adapters</a>
+                                </li>
+                                <li <% if (mainContatentPageName === "views-workers") { %>
+                                        class="main-sidebar-li-checked"   
+                                    <% } %>>
+                                    <a href="/views-workers">Workers</a>
+                                </li>
+                                <li <% if (mainContatentPageName === "views-sessions") { %>
+                                        class="main-sidebar-li-checked"   
+                                    <% } %>>
+                                    <a href="/views-sessions">Sessions</a>
+                                </li>
+                                <li <% if (mainContatentPageName === "views-incidents") { %>
+                                        class="main-sidebar-li-checked"   
+                                    <% } %>>
+                                    <a href="/views-incidents">Incidents</a>
+                                </li>
+                            </ul>
+                        </details>  
+                    </li>
+
+                    <li <% if (mainContatentPageName === "settings") { %>
+                            class="main-sidebar-li-checked"   
+                        <% } %>>
+                        <details <% if (["settings-account", 
+                                        "settings-service"]
+                                        .includes(mainContatentPageName)) { %>
+                                    open
+                                <% } %>>
+                            <summary>Views</summary>
+                            <ul>
+                                <li <% if (mainContatentPageName === "settings-account") { %>
+                                        class="main-sidebar-li-checked"   
+                                    <% } %>>
+                                    <a href="/settings-account">Account</a>
+                                </li>
+                                <li <% if (mainContatentPageName === "settings-service") { %>
+                                        class="main-sidebar-li-checked"   
+                                    <% } %>>
+                                    <a href="/settings-service">Service</a>
+                                </li>
+                            </ul>
+                        </details> 
+                    </li>
+
+                    <li <% if (mainContatentPageName === "help") { %>
+                            class="main-sidebar-li-checked"   
+                        <% } %>>
+                        <a href="#">Help</a>
+                    </li>
+                </ul>
+            </nav>
+            <div id="main-content">
+                <!-- Show requested page or redirect to /dashboard if error occures -->
+                <% try { %> <%- include(mainContatentPageName) -%> <% } catch {
+                response.redirect("/dashboard"); } %>
+            </div>
+        </div>
+    </body>
+</html>

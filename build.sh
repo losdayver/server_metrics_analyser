@@ -12,4 +12,8 @@ cd ../controller
 npm install
 echo Building Controller finished
 
+cd ../console/src
+npm install
+echo Building Console finished
+
 echo All ready
