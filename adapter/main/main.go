@@ -27,6 +27,7 @@ func main() {
 
 	if len(os.Args) > 1 {
 		state.CurrentConfig.Port = os.Args[1]
+		state.CurrentConfig.Identifier = os.Args[2]
 	}
 
 	mux := http.NewServeMux()

@@ -1,0 +1,103 @@
+.card {
+    flex: 1;
+    max-height: 500px;
+    max-width: 1000px;
+    transition: all 0.3s ease;
+
+    overflow-y: hidden;
+
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.card.folded {
+    max-height: 70px !important;
+}
+
+.card-heading {
+    height: 70px;
+    padding: 20px;
+    background-color: #333;
+    color: #fff;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-heading-buttons {
+    display: flex;
+    flex-direction: row;
+}
+
+.card-heading-buttons * {
+    cursor: pointer;
+    margin: 0 5px;
+    width: 20px;
+    height: 20px;
+}
+
+.card-contents {
+    max-height: 400px;
+    overflow-y: scroll !important;
+    padding: 20px;
+}
+
+.card-contents > .card {
+    margin-bottom: 20px;
+}
+
+.adapter-card {
+    min-height: 200px;
+    min-width: 400px;
+
+    background-color: rgb(206, 221, 221);
+}
+
+.adapter-card-heading {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+
+    overflow: hidden;
+
+    min-height: 50px;
+    background-color: rgb(185, 205, 194);
+}
+
+/* TODO: fix the cards not being in the center of the underlying div */
+#main-card-content-view {
+}
+
+#main-card-content-view > .card {
+    margin: 20px 0;
+}
+
+.adapter-card-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.adapter-card-info-line {
+    padding: 5px;
+
+    display: flex;
+    flex-direction: row;
+
+    justify-content: space-between;
+}
+
+.adapter-card-info-line-status {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.adapter-card-info-line-indicator {
+    margin: 0 5px;
+    width: 10px;
+    height: 10px;
+    border-radius: 100%;
+}
