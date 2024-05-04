@@ -12,10 +12,10 @@ if (process.argv.length > 2) {
 
 var app = express();
 
-app.use(express.json());
 app.use(cors());
+app.use(express.json());
 
-app.use("/api", apiRouter);
+app.use("/api", cors(), apiRouter);
 
 app.listen(port, () => {
     console.log(`Starting Controller on port '${port}!'`);

@@ -6,6 +6,7 @@
         <link rel="stylesheet" href="styles/styles.css" />
         <link rel="stylesheet" href="styles/modal.css" />
         <link rel="stylesheet" href="styles/dashboard.css" />
+        <link rel="stylesheet" href="styles/cards.css" />
         <link rel="stylesheet" href="styles/adapters.css" />
         <title>Document</title>
     </head>
@@ -108,8 +109,7 @@
             </nav>
             <div id="main-content">
                 <!-- Show requested page or redirect to /dashboard if error occures -->
-                <% try { %> <%- include(mainContatentPageName) -%> <% } catch {
-                response.redirect("/dashboard"); } %>
+                <% try { %> <%- include(mainContatentPageName) -%> <% } catch {} %>
             </div>
         </div>
     </body>

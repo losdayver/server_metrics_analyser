@@ -46,7 +46,7 @@ echo
 
 sleep 1
 
-for i in {1..9}; do
+for i in {1..5}; do
     curl -X POST http://127.0.0.1:4321/api/clusters/ -d "{
         \"HostName\": \"127.0.0.1\",
         \"Port\": \"430$i\"

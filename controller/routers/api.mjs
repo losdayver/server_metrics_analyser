@@ -1,7 +1,10 @@
 import express from "express";
 import { State } from "../persistance/state.mjs";
+import cors from "cors";
 
 const router = express.Router();
+router.options("*", cors());
+
 const state = new State();
 
 state.startRoutineLoop();

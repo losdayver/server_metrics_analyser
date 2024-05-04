@@ -12,6 +12,15 @@ html {
     height: 100vh;
 }
 
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+form > * {
+    margin-bottom: 5px;
+}
+
 #main-container {
     display: flex;
     flex-direction: row;

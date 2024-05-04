@@ -1,8 +1,17 @@
 "use strict";
 
-function createCard(title, contents = null, modalContents = null) {
+function createCard(
+    title,
+    contents = null,
+    modalContents = null,
+    folded = false
+) {
     // Create the main card div
     var card = $("<div>", { class: "card" });
+
+    if (folded) {
+        $(card).addClass("folded");
+    }
 
     // Create the card heading
     var cardHeading = $("<div>", { class: "card-heading" });
@@ -110,21 +119,92 @@ function createClusterCard(cluster) {
         modalContents.append(`<h4>${host.HostName}</h4>`);
     }
 
-    var card = createCard(cluster.identifier, null, modalContents);
+    var card = createCard(cluster.identifier, null, modalContents, true);
+    var cardContainer = $("<div>", { class: "card-container" });
 
     for (let adapter of cluster.adapters) {
-        console.log(adapter);
-
         let adapterCard = createAdapterCard(adapter);
 
-        $(card).children(".card-contents").append(adapterCard);
+        $(cardContainer).append(adapterCard);
     }
+
+    $(card).children(".card-contents").append(cardContainer);
 
     return card;
 }
 
+function createRegisterAdapterFormCard() {
+    var form = $("<form>")
+        .append(
+            $("<label>", {
+                for: "register-adapter-container-hostname",
+            })
+        )
+        .append(
+            $("<input>", {
+                type: "text",
+                name: "register-adapter-container-hostname",
+                id: "register-adapter-container-hostname",
+            })
+        )
+        .append(
+            $("<label>Port: </label>", {
+                for: "register-adapter-container-port",
+            })
+        )
+        .append(
+            $("<input>", {
+                type: "text",
+                name: "register-adapter-container-port",
+                id: "register-adapter-container-port",
+            })
+        );
+
+    var input = $("<input>", {
+        type: "submit",
+        name: "register-adapter-container-submit",
+        id: "register-adapter-container-submit",
+    });
+
+    $(input).click(async function () {
+        event.preventDefault();
+
+        var body = {
+            HostName: $("#register-adapter-container-hostname").val(),
+            Port: $("#register-adapter-container-port").val(),
+        };
+
+        console.log(body);
+
+        try {
+            var response = await fetch(CONTROLLER_API_URL + "clusters/", {
+                method: "POST",
+                mode: "cors",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(body),
+            });
+        } catch (err) {
+            showMainModal(err.message);
+            return;
+        }
+
+        showMainModal(await response.text());
+
+        updateClusters();
+
+        //showMainModal("added new adaprer");
+    });
+
+    $(form).append(input);
+
+    return createCard("Register New Adapter", form, null, false);
+}
+
 async function updateClusters() {
-    $("#main-card-content-view").find("*").remove();
+    $("#adapter-cards-container").find("*").remove();
 
     var response = await fetch(CONTROLLER_API_URL + "clusters", {
         mode: "cors",
@@ -134,7 +214,7 @@ async function updateClusters() {
 
     // iterate through clusters
     for (let cluster of data) {
-        $("#main-card-content-view").append(createClusterCard(cluster));
+        $("#adapter-cards-container").append(createClusterCard(cluster));
     }
 }
 
@@ -142,4 +222,5 @@ var clusterCard;
 
 $(function () {
     updateClusters();
+    $("#register-adapter-container").append(createRegisterAdapterFormCard());
 });
