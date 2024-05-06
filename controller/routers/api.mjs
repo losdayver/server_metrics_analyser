@@ -62,7 +62,7 @@ router
                 req.body.ClusterHostName
             )
             .then(() => {
-                res.status(200).send("successfully added new adapter");
+                res.status(200).send("successfully added new routine");
             })
             .catch((err) => {
                 res.status(400).send(err.message);
