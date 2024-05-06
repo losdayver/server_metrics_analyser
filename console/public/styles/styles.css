@@ -21,6 +21,30 @@ form > * {
     margin-bottom: 5px;
 }
 
+input,
+select {
+    height: 30px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    border: none;
+
+    padding: 0 10px;
+    font-size: 15px;
+}
+
+select {
+    border-radius: 0;
+}
+
+select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+select::-ms-expand {
+    display: none;
+}
+
 #main-container {
     display: flex;
     flex-direction: row;
@@ -30,7 +54,7 @@ form > * {
 #main-sidebar {
     background-color: #333;
     color: #fff;
-    min-width: 150px;
+    min-width: 125px;
     padding: 0;
     height: 100vh;
 }
@@ -69,4 +93,28 @@ form > * {
     padding: 20px;
     flex-grow: 1; /* Make the content area take up remaining space */
     overflow-y: auto;
+}
+
+@media only screen and (max-width: 768px) {
+    /* For mobile phones: */
+    #main-container {
+        flex-direction: column;
+    }
+
+    #main-sidebar {
+        height: auto;
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
 }

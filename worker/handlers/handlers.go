@@ -113,7 +113,7 @@ func PostIncidentsHandler(w http.ResponseWriter, r *http.Request) {
 
 	_, err := w.Write(jsonData)
 
-	if err != nil {
+	if err == nil {
 		state.Incidents.Clear()
 	}
 }

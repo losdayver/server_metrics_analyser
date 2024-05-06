@@ -7,7 +7,6 @@
         <link rel="stylesheet" href="styles/modal.css" />
         <link rel="stylesheet" href="styles/dashboard.css" />
         <link rel="stylesheet" href="styles/cards.css" />
-        <link rel="stylesheet" href="styles/adapters.css" />
         <title>Document</title>
     </head>
     <body>
@@ -15,6 +14,7 @@
         <script src="scripts/external/jquery.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
         <script src="scripts/modal.js"></script>
+        <script src="scripts/cards.js"></script>
         <script src="scripts/main.js"></script>
 
         <div id="main-modal">
@@ -45,7 +45,7 @@
                         <% } %>>
                         <details <% if (["views-adapters", 
                                         "views-workers",
-                                        "views-sessions",
+                                        "views-routines",
                                         "views-incidents"]
                                         .includes(mainContatentPageName)) { %>
                                     open
@@ -62,10 +62,10 @@
                                     <% } %>>
                                     <a href="/views-workers">Workers</a>
                                 </li>
-                                <li <% if (mainContatentPageName === "views-sessions") { %>
+                                <li <% if (mainContatentPageName === "views-routines") { %>
                                         class="main-sidebar-li-checked"   
                                     <% } %>>
-                                    <a href="/views-sessions">Sessions</a>
+                                    <a href="/views-routines">Routines</a>
                                 </li>
                                 <li <% if (mainContatentPageName === "views-incidents") { %>
                                         class="main-sidebar-li-checked"   

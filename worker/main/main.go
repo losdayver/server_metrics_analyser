@@ -33,7 +33,9 @@ func main() {
 
 	// Handlers
 	mux.HandleFunc("GET /api/identifier/{$}", ApiWrapper(handlers.GetIdentifierHandler))
+
 	mux.HandleFunc("GET /api/incidents/{$}", ApiWrapper(handlers.GetIncidentsHandler))
+	mux.HandleFunc("POST /api/incidents/{$}", ApiWrapper(handlers.PostIncidentsHandler))
 
 	mux.HandleFunc("POST /api/collect/start/{$}", ApiWrapper(handlers.PostCollectStartHandler))
 	mux.HandleFunc("POST /api/collect/stop/{$}", ApiWrapper(handlers.PostCollectStopHandler))

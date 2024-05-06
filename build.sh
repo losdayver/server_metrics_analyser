@@ -17,3 +17,6 @@ npm install
 echo Building Console finished
 
 echo All ready
+
+cd ..
+./run-demo.sh

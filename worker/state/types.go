@@ -10,7 +10,7 @@ import (
 
 /* External types */
 
-// Measure object is sent by the adapter upon requesting measures from the adapter
+// Measure object is sent by the worker upon requesting measures from the adapter
 type Measure struct {
 	DialName string
 	Value    float64
@@ -23,6 +23,7 @@ type Incident struct {
 	AdapterIdentifier string
 	DateTime          time.Time
 	Dial              Dial
+	Value             float64
 }
 
 // Config represents currnet configuration of a worker
@@ -142,6 +143,7 @@ func (sessionsHashMap SessionHashMap) AddMeasures(id uuid.UUID, measures []Measu
 						AdapterIdentifier: session.AdapterIdentifier,
 						DateTime:          time.Now(),
 						Dial:              session.SessionItems[i].Dial,
+						Value:             measure.Value,
 					})
 				}
 				break
@@ -156,16 +158,16 @@ func (sessionsHashMap SessionHashMap) AddMeasures(id uuid.UUID, measures []Measu
 
 type IncidentList struct {
 	Incidents []Incident
-	Mutex   *sync.Mutex
+	Mutex     *sync.Mutex
 }
 
-func (incidentList IncidentList) Push(incident Incident) {
+func (incidentList *IncidentList) Push(incident Incident) {
 	incidentList.Mutex.Lock()
 	defer incidentList.Mutex.Unlock()
 	incidentList.Incidents = append(incidentList.Incidents, incident)
 }
 
-func (incidentList IncidentList) Clear() {
+func (incidentList *IncidentList) Clear() {
 	incidentList.Mutex.Lock()
 	defer incidentList.Mutex.Unlock()
 	incidentList.Incidents = make([]Incident, 0)

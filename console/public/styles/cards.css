@@ -23,6 +23,8 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+
+    flex-wrap: wrap;
 }
 
 .card-heading-buttons {
@@ -53,4 +55,31 @@
 
 .card-container > * {
     margin: 20px 0;
+}
+
+.contents-card-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.contents-card-info-line {
+    padding: 5px;
+
+    display: flex;
+    flex-direction: row;
+
+    justify-content: space-between;
+}
+
+.contents-card-info-line-status {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.contents-card-info-line-indicator {
+    margin: 0 5px;
+    width: 10px;
+    height: 10px;
+    border-radius: 100%;
 }
