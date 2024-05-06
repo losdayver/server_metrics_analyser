@@ -9,29 +9,65 @@ const total_incidents_by_cluster = document.getElementById(
 
 ("use strict");
 
-$(document).ready(function () {
+$(function () {
     updateDashboard();
 });
 
-function updateDashboard() {
+async function updateDashboard() {
+    var response = await fetch(CONTROLLER_API_URL + "incidents", {
+        mode: "cors",
+    });
+    var incidents = await response.json();
+
+    var response = await fetch(CONTROLLER_API_URL + "clusters", {
+        mode: "cors",
+    });
+    var clusters = await response.json();
+
+    const incidentOccurrences = incidents.reduce((acc, obj) => {
+        const { AdapterIdentifier } = obj;
+        acc[AdapterIdentifier] = (acc[AdapterIdentifier] || 0) + 1;
+        return acc;
+    }, {});
+
+    const incidentOccurrencesInTime = incidents.reduce((acc, obj) => {
+        const { DateTime } = obj;
+
+        // Create a new Date object from the input string
+        const date = new Date(DateTime);
+
+        // Format the date part
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+        const dateString = `${year}-${month}-${day}`;
+
+        // Format the time part
+        const hours = String(date.getHours()).padStart(2, "0");
+        const minutes = String(date.getMinutes()).padStart(2, "0");
+        //const seconds = String(date.getSeconds()).padStart(2, "0");
+        const timeString = `${hours}:${minutes}`;
+
+        var dateTimeString = `${dateString} ${hours}:${minutes}`;
+
+        acc[dateTimeString] = (acc[dateTimeString] || 0) + 1;
+        return acc;
+    }, {});
+
+    console.log(incidentOccurrencesInTime);
+
     new Chart(number_of_incidents_in_time, {
         type: "line",
         data: {
-            labels: ["12:00", "13:00", "14:00", "15:00", "16:00", "17:00"],
+            labels: Object.entries(incidentOccurrencesInTime).map(
+                (entrie) => entrie[0]
+            ),
             datasets: [
                 {
-                    label: "Cluster 1",
-                    data: [12, 19, 3, 5, 2, 3],
-                    borderWidth: 2.5,
-                },
-                {
-                    label: "Cluster 2",
-                    data: [5, 18, 5, 6, 3, 2],
-                    borderWidth: 2.5,
-                },
-                {
-                    label: "Cluster 3",
-                    data: [7, 12, 4, 8, 23, 3],
+                    label: "incidents",
+                    data: Object.entries(incidentOccurrencesInTime).map(
+                        (entrie) => entrie[1]
+                    ),
                     borderWidth: 2.5,
                 },
             ],
@@ -48,11 +84,15 @@ function updateDashboard() {
     new Chart(total_incidents_by_cluster, {
         type: "pie",
         data: {
-            labels: ["Cluster 1", "Cluster 2", "Cluster 3"],
+            labels: Object.entries(incidentOccurrences).map(
+                (entrie) => entrie[0]
+            ),
             datasets: [
                 {
-                    label: "Cluster 1",
-                    data: [12, 10, 4],
+                    label: "data1",
+                    data: Object.entries(incidentOccurrences).map(
+                        (entrie) => entrie[1]
+                    ),
                 },
             ],
         },

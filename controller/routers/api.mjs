@@ -8,6 +8,7 @@ router.options("*", cors());
 const state = new State();
 
 state.startRoutineLoop();
+state.startIncidentFetchLoop();
 
 router
     .route("/clusters")
@@ -68,5 +69,9 @@ router
                 res.status(400).send(err.message);
             });
     });
+
+router.route("/incidents").get((req, res) => {
+    res.status(200).send(state.getIncidents());
+});
 
 export default router;

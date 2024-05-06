@@ -166,10 +166,62 @@ async function createRegisterRoutineFormCard() {
 
             showMainModal(await response.text());
 
-            //updateRoutines();
+            updateRoutines();
         });
 
     return createCard("Register New Routine", form, null, false);
+}
+
+function createRoutineCard(routine) {
+    var routineCardWrapper = $("<div>", { class: "contents-card-wrapper" });
+
+    var workerCard = createWorkerCard(routine.worker);
+
+    var infoLineIdentifier = $("<div>", { class: "contents-card-info-line" })
+        .html(`
+        <div>Cluster Identifier: </div>
+        <div>${routine.clusterIdentifier}</div>
+    `);
+
+    var infoLineWorker = $("<div>", { class: "contents-card-info-line" }).html(
+        "<div>Worker: </div>"
+    );
+
+    var infoLineDials = $("<div>", { class: "contents-card-info-line" }).html(
+        "<div>Dials: </div>"
+    );
+
+    var infoLineSessionID = $("<div>", {
+        class: "contents-card-info-line",
+    }).html(`
+        <div>sessionID: </div>
+        <div>${routine.sessionID}</div>
+    `);
+
+    $(routineCardWrapper)
+        .append(infoLineSessionID)
+        .append(infoLineIdentifier)
+        .append(infoLineWorker)
+        .append(
+            $("<div>", {
+                html: workerCard,
+            })
+        )
+        .append(infoLineDials)
+        .append(
+            $("<div>", {
+                html: createDialsCard(routine.dials),
+            })
+        );
+
+    var card = createCard(
+        `${routine.sessionID}`,
+        routineCardWrapper,
+        null,
+        true
+    );
+
+    return card;
 }
 
 async function updateRoutines() {
@@ -188,8 +240,8 @@ async function updateRoutines() {
 }
 
 $(async function () {
-    //updateRoutines();
     $("#register-routine-container").append(
         await createRegisterRoutineFormCard()
     );
+    updateRoutines();
 });

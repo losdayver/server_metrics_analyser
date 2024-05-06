@@ -6,7 +6,9 @@ class State {
         this.clusters = [];
         this.workers = [];
         this.routines = [];
+        this.incidents = [];
         this.routineLoopRunning = false;
+        this.incidentsFetchLoopRunning = false;
     }
 
     getWorkers() {
@@ -19,6 +21,10 @@ class State {
 
     getRoutines() {
         return this.routines;
+    }
+
+    getIncidents() {
+        return this.incidents;
     }
 
     async addAdapter(hostName, port) {
@@ -209,6 +215,30 @@ class State {
             }
         }
     }
+
+    async startIncidentFetchLoop() {
+        if (this.incidentsFetchLoopRunning) {
+            return;
+        }
+
+        this.incidentsFetchLoopRunning = true;
+
+        while (this.incidentsFetchLoopRunning) {
+            await new Promise((resolve) => setTimeout(resolve, 100));
+            this.fetchIncidents();
+        }
+    }
+
+    async fetchIncidents() {
+        for (let worker of this.workers) {
+            try {
+                // TODO fix this. this is megabad
+                this.incidents = this.incidents.concat(
+                    await worker.fetchIncidents()
+                );
+            } catch (err) {}
+        }
+    }
 }
 
 class Routine {
@@ -275,6 +305,26 @@ class Worker {
         this.port = port;
         this.dead = false;
         this.identifier = identifier;
+    }
+
+    async fetchIncidents() {
+        try {
+            var incidentsResponse = await axios({
+                method: "post",
+                url: `http://${this.hostName}:${this.port}/api/incidents/`,
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+
+            var incidents = incidentsResponse.data;
+        } catch (err) {
+            throw new Error(
+                `failed to get incidents from worker ${this.hostName}:${this.port}`
+            );
+        }
+
+        return incidents;
     }
 
     testAlive() {}
