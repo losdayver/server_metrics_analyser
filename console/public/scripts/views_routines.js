@@ -174,8 +174,32 @@ async function createRegisterRoutineFormCard() {
 
 function createRoutineCard(routine) {
     var routineCardWrapper = $("<div>", { class: "contents-card-wrapper" });
-
     var workerCard = createWorkerCard(routine.worker);
+
+    var infoLineEnabled = $("<div>", { class: "contents-card-info-line" })
+        .html(`
+        <div>Enabled: </div>
+        <div class="contents-card-info-line-status">
+            <div>${routine.enabled}</div>
+            <div 
+                class="contents-card-info-line-indicator"
+                style="background-color: ${routine.enabled ? "#0A0" : "#F00"};"
+            >
+            </div>
+        </div>
+    `);
+
+    var infoLineBroken = $("<div>", { class: "contents-card-info-line" }).html(`
+        <div>Broken: </div>
+        <div class="contents-card-info-line-status">
+            <div>${routine.broken}</div>
+            <div 
+                class="contents-card-info-line-indicator"
+                style="background-color: ${routine.broken ? "#F00" : "#0A0"};"
+            >
+            </div>
+        </div>
+    `);
 
     var infoLineIdentifier = $("<div>", { class: "contents-card-info-line" })
         .html(`
@@ -199,6 +223,8 @@ function createRoutineCard(routine) {
     `);
 
     $(routineCardWrapper)
+        .append(infoLineBroken)
+        .append(infoLineEnabled)
         .append(infoLineSessionID)
         .append(infoLineIdentifier)
         .append(infoLineWorker)

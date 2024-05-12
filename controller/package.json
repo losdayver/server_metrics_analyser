@@ -11,6 +11,7 @@
     "author": "losdayver",
     "license": "ISC",
     "dependencies": {
+        "async-mutex": "^0.5.0",
         "axios": "^1.6.8",
         "cors": "^2.8.5",
         "express": "^4.19.2",
