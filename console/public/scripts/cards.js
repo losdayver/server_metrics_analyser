@@ -63,7 +63,7 @@ function createCard(
 async function updateWorkers() {
     $("#worker-cards-container").find("*").remove();
 
-    var response = await fetch(CONTROLLER_API_URL + "workers", {
+    var response = await fetch(CONTROLLER_API_URL + "workers/", {
         mode: "cors",
     });
 

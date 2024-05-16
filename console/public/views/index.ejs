@@ -12,10 +12,12 @@
     </head>
     <body>
         <script src="scripts/config.js"></script>
-        <script src="scripts/external/jquery.js"></script>
+        <!--<script src="scripts/external/jquery.js"></script>-->
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
         <script src="scripts/modal.js"></script>
         <script src="scripts/cards.js"></script>
+        <script src="scripts/auth.js"></script>
         <script src="scripts/main.js"></script>
 
         <div id="main-modal">
@@ -32,13 +34,13 @@
                     <li <% if (mainContatentPageName === "welcome") { %>
                             class="main-sidebar-li-checked"   
                         <% } %>>
-                        <a href="/welcome">Welcome</a>
+                        <a href="<%= proxy %>/welcome">Welcome</a>
                     </li>
 
                     <li <% if (mainContatentPageName === "dashboard") { %>
                             class="main-sidebar-li-checked"   
                         <% } %>>
-                        <a href="/dashboard">Dashboard</a>
+                        <a href="<%= proxy %>/dashboard">Dashboard</a>
                     </li>
 
                     <li <% if (mainContatentPageName === "views") { %>
@@ -56,28 +58,28 @@
                                 <li <% if (mainContatentPageName === "views-adapters") { %>
                                         class="main-sidebar-li-checked"   
                                     <% } %>>
-                                    <a href="/views-adapters">Adapters</a>
+                                    <a href="<%= proxy %>/views-adapters">Adapters</a>
                                 </li>
                                 <li <% if (mainContatentPageName === "views-workers") { %>
                                         class="main-sidebar-li-checked"   
                                     <% } %>>
-                                    <a href="/views-workers">Workers</a>
+                                    <a href="<%= proxy %>/views-workers">Workers</a>
                                 </li>
                                 <li <% if (mainContatentPageName === "views-routines") { %>
                                         class="main-sidebar-li-checked"   
                                     <% } %>>
-                                    <a href="/views-routines">Routines</a>
+                                    <a href="<%= proxy %>/views-routines">Routines</a>
                                 </li>
                                 <li <% if (mainContatentPageName === "views-incidents") { %>
                                         class="main-sidebar-li-checked"   
                                     <% } %>>
-                                    <a href="/views-incidents">Incidents</a>
+                                    <a href="<%= proxy %>/views-incidents">Incidents</a>
                                 </li>
                             </ul>
                         </details>  
                     </li>
 
-                    <li <% if (mainContatentPageName === "settings") { %>
+                    <li <% if (mainContatentPageName === "views-settings") { %>
                             class="main-sidebar-li-checked"   
                         <% } %>>
                         <details <% if (["settings-account", 
@@ -101,11 +103,23 @@
                         </details> 
                     </li>
 
-                    <li <% if (mainContatentPageName === "help") { %>
+                    <li <% if (mainContatentPageName === "views-report") { %>
+                            class="main-sidebar-li-checked"   
+                        <% } %>>
+                        <a href="<%= proxy %>/views-report">Report</a>
+                    </li>
+
+                    <li <% if (mainContatentPageName === "views-help") { %>
                             class="main-sidebar-li-checked"   
                         <% } %>>
                         <a href="#">Help</a>
                     </li>
+
+                    <li <% if (mainContatentPageName === "views-authenticate") { %>
+                            class="main-sidebar-li-checked"   
+                        <% } %>>
+                    <a href="<%= proxy %>/views-authenticate">Authenticate</a>
+                </li>
                 </ul>
             </nav>
             <div id="main-content">

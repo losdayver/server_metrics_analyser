@@ -3,6 +3,7 @@ const path = require("path");
 
 const app = express();
 const port = 4500;
+const proxy = "/diploma";
 
 // Set EJS as the view engine
 app.set("view engine", "ejs");
@@ -16,11 +17,12 @@ app.get("/:pageName", (req, res) => {
     res.render("index", {
         response: res,
         mainContatentPageName: req.params.pageName,
+        proxy: proxy
     });
 });
 
 app.get("/", (req, res) => {
-    res.redirect("/dashboard");
+    res.redirect(proxy + "/dashboard");
 });
 
 app.listen(port, () => {
