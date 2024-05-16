@@ -67,9 +67,7 @@ function createIncident(incident) {
 async function updateIncidents() {
     $("#incident-list-container").find("*").remove();
 
-    var response = await fetch(CONTROLLER_API_URL + "incidents", {
-        mode: "cors",
-    });
+    var response = await fetch(CONTROLLER_API_URL + "incidents");
 
     var data = await response.json();
 

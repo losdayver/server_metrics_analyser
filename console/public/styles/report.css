@@ -1,0 +1,26 @@
+#linear-regression-settings-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.algorithm-form label {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.algorithm-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.algorithm-form > * {
+    width: 600px;
+  flex-grow: 1;
+
+}
+
+#algorithm-container * {
+    margin-bottom: 5px;
+}
