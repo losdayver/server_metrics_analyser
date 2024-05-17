@@ -21,8 +21,6 @@ app.use(cookieParser());
 app.use("/api", cors(), authMiddleware, apiRouter);
 
 app.post("/authenticate/", (req, res) => {
-    console.log("test auth");
-
     if (!(req.body.username && req.body.password)) {
         res.status(401).send("Invalid credentials!");
         return;

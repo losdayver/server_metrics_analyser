@@ -2,6 +2,9 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Radio+Canada+Big:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="stylesheet" href="styles/styles.css" />
         <link rel="stylesheet" href="styles/modal.css" />
@@ -9,9 +12,11 @@
         <link rel="stylesheet" href="styles/cards.css" />
         <link rel="stylesheet" href="styles/incidents.css" />
         <link rel="stylesheet" href="styles/report.css" />
+        <link rel="stylesheet" href="styles/prettify.css" />
         <title>Document</title>
     </head>
     <body>
+        <script src="scripts/main.js"></script>
         <script src="scripts/config.js"></script>
         <!--<script src="scripts/external/jquery.js"></script>-->
         <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -19,7 +24,6 @@
         <script src="scripts/modal.js"></script>
         <script src="scripts/cards.js"></script>
         <script src="scripts/auth.js"></script>
-        <script src="scripts/main.js"></script>
 
         <div id="main-modal">
             <div id="main-modal-window">
@@ -31,6 +35,7 @@
 
         <div id="main-container">
             <nav id="main-sidebar">
+                <h1>Меню</h1>
                 <ul>
                     <li <% if (mainContatentPageName === "welcome") { %>
                             class="main-sidebar-li-checked"   
@@ -80,30 +85,6 @@
                         </details>  
                     </li>
 
-                    <li <% if (mainContatentPageName === "views-settings") { %>
-                            class="main-sidebar-li-checked"   
-                        <% } %>>
-                        <details <% if (["settings-account", 
-                                        "settings-service"]
-                                        .includes(mainContatentPageName)) { %>
-                                    open
-                                <% } %>>
-                            <summary>Views</summary>
-                            <ul>
-                                <li <% if (mainContatentPageName === "settings-account") { %>
-                                        class="main-sidebar-li-checked"   
-                                    <% } %>>
-                                    <a href="/settings-account">Account</a>
-                                </li>
-                                <li <% if (mainContatentPageName === "settings-service") { %>
-                                        class="main-sidebar-li-checked"   
-                                    <% } %>>
-                                    <a href="/settings-service">Service</a>
-                                </li>
-                            </ul>
-                        </details> 
-                    </li>
-
                     <li <% if (mainContatentPageName === "views-report") { %>
                             class="main-sidebar-li-checked"   
                         <% } %>>
@@ -124,7 +105,6 @@
                 </ul>
             </nav>
             <div id="main-content">
-                <!-- Show requested page or redirect to /dashboard if error occures -->
                 <% try { %> <%- include(mainContatentPageName) -%> <% } catch {} %>
             </div>
         </div>

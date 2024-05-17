@@ -16,11 +16,14 @@
 }
 
 .algorithm-form > * {
-    width: 600px;
-  flex-grow: 1;
-
+    width: 100%;
+    flex-grow: 1;
 }
 
 #algorithm-container * {
     margin-bottom: 5px;
+}
+
+#algorithm-select {
+    margin-bottom: 20px;
 }

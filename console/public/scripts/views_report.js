@@ -5,12 +5,31 @@ var algorithmOptions = [
     { value: "option3", text: "Option 3" }
 ];
 
+// data is an array of [xi, yi] values
+// returns an array of [b1, b2] valeus (b2 is slope)
+function getLinearRegressionCoefitients(data) {
+    // get average of all the xi
+    var x_avg = data.reduce((sum, item) => sum + item[0], 0) / data.length;
+    var y_avg = data.reduce((sum, item) => sum + item[1], 0) / data.length;
+
+    console.log(x_avg);
+
+    var numeratior = data.reduce((sum, item) =>
+        sum + (item[0] - x_avg) * (item[1] - y_avg), 0
+    );
+
+    var denominator = data.reduce((sum, item) =>
+        sum + Math.pow(item[0] - x_avg, 2), 0
+    );
+
+    var b2 = numeratior / denominator;
+    var b1 = y_avg - b2 * x_avg;
+
+    return { b1: b1, b2: b2 };
+}
+
 // this code is insane
 async function loadLinearRegression() {
-    function getLinearRegressionCoefitients() {
-
-    }
-
     try {
         var clusterResponse = await fetch(CONTROLLER_API_URL + "clusters/");
         clusterResponse = await clusterResponse.json();
@@ -137,17 +156,12 @@ async function loadLinearRegression() {
                 }
             });
 
-            // console.log($(dateStart).val());
-            // console.log($(dateEnd).val());
-            // console.log(checkedHosts);
-            // console.log(checkedDials);
-
-
             if (!$(dateStart).val() || !$(dateEnd).val() || !checkedHosts || !checkedDials) {
                 showMainModal("Some of the fields empty. Check again.");
                 return;
             }
 
+            // filter by time the number of occurences
             var formFilteredIncidents = incidetResponse.filter(incident => {
                 return checkedHosts.includes(incident.HostName) &&
                     checkedDials.includes(incident.Dial.Name) &&
@@ -157,8 +171,6 @@ async function loadLinearRegression() {
 
             const incidentOccurrencesInTime = formFilteredIncidents.reduce((acc, obj) => {
                 const { DateTime } = obj;
-
-                console.log(DateTime);
 
                 // Create a new Date object from the input string
                 const date = new Date(DateTime);
@@ -181,10 +193,71 @@ async function loadLinearRegression() {
                 return acc;
             }, {});
 
-            console.log(formFilteredIncidents);
-            console.log(incidentOccurrencesInTime);
+            var readyForCalculation = [];
+            for (let i = 0; i < Object.values(incidentOccurrencesInTime).length; i++) {
+                readyForCalculation.push([i, Object.values(incidentOccurrencesInTime)[i]]);
+            }
 
+            // calculate linear regression and then show it on the modal
+            var { b1, b2 } = getLinearRegressionCoefitients(readyForCalculation);
 
+            console.log(b2);
+
+            var chart_ctx = $("<canvas>");
+
+            new Chart(chart_ctx, {
+                type: "bar",
+                data: {
+                    labels: Object.keys(incidentOccurrencesInTime),
+                    datasets: [
+                        {
+                            type: "line",
+                            label: "Number of occurences",
+                            data: Object.values(incidentOccurrencesInTime),
+                            borderWidth: 1,
+                        },
+                        {
+                            type: "line",
+                            label: "Linear regression line",
+                            data: readyForCalculation.map((item) => item[0] * b2 + b1),
+                            pointRadius: 0,
+                        },
+                    ],
+
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                        },
+                    },
+                },
+            });
+
+            var modalContents = $("<div>");
+
+            modalContents
+                .append($("<h1>Expected incident rate</h1>"))
+                .append($(chart_ctx))
+                .append($(`<h2>Start date: ${$(dateStart).val()}</h2>`))
+                .append($(`<h2>End date: ${$(dateEnd).val()}</h2>`))
+                .append($("<h2>Listed hosts: </h2>"));
+
+            checkedHosts.forEach((host) => {
+                modalContents.append($(`<p>${host}</p>`))
+            });
+
+            modalContents
+                .append($("<h2>Listed Dials: </h2>"))
+
+            checkedDials.forEach((dial) => {
+                modalContents.append($(`<p>${dial}</p>`))
+            });
+
+            modalContents
+                .append($(`<h2>Slope coefficient: ~${b2.toFixed(7)}</h2>`))
+
+            showMainModal(modalContents);
         });
     });
 }

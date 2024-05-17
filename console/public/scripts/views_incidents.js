@@ -48,7 +48,7 @@ function createIncident(incident) {
             </div>
             <div class="incident-footer">
                 <div class="incident-value">${incident.Value.toFixed(2)}</div>
-                <div class="incident-unit">%</div>
+                <div class="incident-unit">${incident.Dial.Unit}</div>
             </div>
         </div>
     `);
@@ -72,7 +72,7 @@ async function updateIncidents() {
     var data = await response.json();
 
     // iterate through clusters
-    for (let incident of data) {
+    for (let incident of data.reverse()) {
         $("#incident-list-container").append(createIncident(incident));
     }
 }

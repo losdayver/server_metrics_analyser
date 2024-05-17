@@ -7,8 +7,6 @@ const total_incidents_by_cluster = document.getElementById(
     "total_incidents_by_cluster"
 );
 
-("use strict");
-
 $(function () {
     updateDashboard();
 });
@@ -54,21 +52,16 @@ async function updateDashboard() {
         return acc;
     }, {});
 
-    console.log(incidentOccurrencesInTime);
-
     new Chart(number_of_incidents_in_time, {
         type: "line",
         data: {
-            labels: Object.entries(incidentOccurrencesInTime).map(
-                (entrie) => entrie[0]
-            ),
+            labels: Object.keys(incidentOccurrencesInTime),
             datasets: [
                 {
                     label: "incidents",
-                    data: Object.entries(incidentOccurrencesInTime).map(
-                        (entrie) => entrie[1]
-                    ),
-                    borderWidth: 2.5,
+                    data: Object.values(incidentOccurrencesInTime),
+                    borderWidth: 1,
+                    pointRadius: 0,
                 },
             ],
         },
@@ -84,15 +77,11 @@ async function updateDashboard() {
     new Chart(total_incidents_by_cluster, {
         type: "pie",
         data: {
-            labels: Object.entries(incidentOccurrences).map(
-                (entrie) => entrie[0]
-            ),
+            labels: Object.keys(incidentOccurrences),
             datasets: [
                 {
                     label: "data1",
-                    data: Object.entries(incidentOccurrences).map(
-                        (entrie) => entrie[1]
-                    ),
+                    data: Object.values(incidentOccurrences),
                 },
             ],
         },

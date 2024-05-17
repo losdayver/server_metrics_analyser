@@ -29,10 +29,13 @@ $(function () {
 
             var obj = await response.json();
 
-            document.cookie = `auth = ${obj.sessionToken}; expires = Thu, 18 Dec 2025 12:00:00 UTC; path = /diploma/`;
+            document.cookie = `auth = ${obj.sessionToken}; expires = Thu, 18 Dec 2025 12:00:00 UTC; path = /`;
 
             showMainModal("Success!");
-            return;
+
+            await new Promise(r => setTimeout(r, 1000));
+
+            window.location.href = CONSOLE_URL + "dashboard";
         } catch (err) {
             showMainModal(err.message);
             return;

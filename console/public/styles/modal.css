@@ -1,4 +1,3 @@
-/* Modal styles */
 #main-modal {
     display: none;
     position: absolute;
@@ -7,21 +6,22 @@
     top: 0;
     width: 100%;
     height: 100%;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: scroll;
     background-color: rgba(0, 0, 0, 0.4);
 }
 
 #main-modal-contents {
-    margin: 40px 0 0 0;
+    margin: 10px 20px;
 }
 
 #main-modal-window {
-    background-color: #fefefe;
+    background-color: white;
     padding: 20px;
 
-    max-width: 500px;
+    max-width: 800px;
 
-    margin: auto;
+    margin: 50px auto;
 
     overflow-y: scroll;
 }
