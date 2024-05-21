@@ -35,7 +35,7 @@ $(function () {
 
             await new Promise(r => setTimeout(r, 1000));
 
-            window.location.href = CONSOLE_URL + "dashboard";
+            window.location.href = CONSOLE_URL + "views-dashboard";
         } catch (err) {
             showMainModal(err.message);
             return;

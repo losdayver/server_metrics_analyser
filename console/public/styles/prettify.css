@@ -12,6 +12,11 @@ button {
     font-size: 20px;
 }
 
+.card-button {
+    margin-top: 20px;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.8);
+}
+
 input, button, select, img {
     border-radius: 10px;
     cursor: pointer;
@@ -161,4 +166,8 @@ input[type="checkbox"]:checked {
     border-radius: 10px;
     padding: 40px;
     color: black
+}
+
+table * {
+    text-align: center;
 }

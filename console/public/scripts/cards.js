@@ -141,16 +141,16 @@ function createRegisterWorkerFormCard() {
 
     $(form).append(input);
 
-    return createCard("Register New Worker", form, null, false);
+    return createCard("Форма регистрации обработчика", form, null, false);
 }
 
 function createWorkerCard(worker) {
     var workerCardWrapper = $("<div>", { class: "contents-card-wrapper" });
 
     var infoLineDead = $("<div>", { class: "contents-card-info-line" }).html(`
-        <div>Dead: </div>
+        <div>Доступен: </div>
         <div class="contents-card-info-line-status">
-            <div>${worker.dead}</div>
+            <div>${!worker.dead ? "Да" : "Нет"}</div>
             <div 
                 class="contents-card-info-line-indicator"
                 style="background-color: ${worker.dead ? "#F00" : "#0A0"};"
@@ -161,18 +161,18 @@ function createWorkerCard(worker) {
 
     var infoLineHostName = $("<div>", { class: "contents-card-info-line" })
         .html(`
-        <div>Host Name: </div>
+        <div>Имя хоста: </div>
         <div>${worker.hostName}</div>
     `);
 
     var infoLinePort = $("<div>", { class: "contents-card-info-line" }).html(`
-        <div>Port: </div>
+        <div>Порт: </div>
         <div>${worker.port}/TCP</div>
     `);
 
     var infoLineIdentifier = $("<div>", { class: "contents-card-info-line" })
         .html(`
-        <div>Identifier: </div>
+        <div>Идентификатор: </div>
         <div>${worker.identifier}</div>
     `);
 
@@ -196,24 +196,24 @@ function createDialCard(dial) {
     var dialCardWrapper = $("<div>", { class: "contents-card-wrapper" });
 
     var infoLineName = $("<div>", { class: "contents-card-info-line" }).html(`
-        <div>Name: </div>
+        <div>Имя: </div>
         <div>${dial.Name}</div>
     `);
 
     var infoLineUnit = $("<div>", { class: "contents-card-info-line" }).html(`
-        <div>Unit: </div>
+        <div>Единица измерения: </div>
         <div>${dial.Unit}</div>
     `);
 
     var infoLineThreshold = $("<div>", { class: "contents-card-info-line" })
         .html(`
-        <div>Threshold: </div>
+        <div>Порог: </div>
         <div>${dial.Threshold}</div>
     `);
 
     var infoLineRunCount = $("<div>", { class: "contents-card-info-line" })
         .html(`
-        <div>RunCount: </div>
+        <div>Окно: </div>
         <div>${dial.RunCount}</div>
     `);
 
@@ -235,7 +235,7 @@ function createDialsCard(dials) {
         $(dialsCardWrapper).append(createDialCard(dial));
     }
 
-    var card = createCard("List of Dials", dialsCardWrapper, null, true);
+    var card = createCard("Подробнее", dialsCardWrapper, null, true);
 
     return card;
 }

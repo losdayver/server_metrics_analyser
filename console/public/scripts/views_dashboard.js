@@ -53,10 +53,10 @@ async function updateDashboard() {
             labels: Object.keys(incidentOccurrencesInTime),
             datasets: [
                 {
-                    label: "incidents",
+                    label: "Инциденты (последние 1000)",
                     data: Object.values(incidentOccurrencesInTime),
                     borderWidth: 1,
-                    pointRadius: 0,
+                    pointRadius: 2,
                 },
             ],
         },
@@ -75,7 +75,7 @@ async function updateDashboard() {
             labels: Object.keys(incidentOccurrences),
             datasets: [
                 {
-                    label: "data1",
+                    label: "количество",
                     data: Object.values(incidentOccurrences),
                 },
             ],
@@ -84,7 +84,7 @@ async function updateDashboard() {
 
     const table_recent_incidents = $("#recent-incidents-table");
 
-    response = await fetch(CONTROLLER_API_URL + "incidents" + "?from=0&to=5", {
+    response = await fetch(CONTROLLER_API_URL + "incidents" + "?from=0&to=10", {
         mode: "cors",
     });
     var incidents_table_list = await response.json();
@@ -92,11 +92,11 @@ async function updateDashboard() {
     $(table_recent_incidents).append(`
     <thead>
         <tr>
-            <th>Cluster</th>
-            <th>Host Name</th>
-            <th>Dial Name</th>
-            <th>Threshold</th>
-            <th>Measurement, Unit</th>
+            <th>Кластер</th>
+            <th>Имя хоста</th>
+            <th>Имя метрики</th>
+            <th>Порог</th>
+            <th>Измерение, Единица</th>
         </tr>
     </thead>
     `);
@@ -112,31 +112,5 @@ async function updateDashboard() {
             </tr>
     
         `);
-    });
-}
-
-const ctx4 = document.getElementById("myChart4");
-const ctx5 = document.getElementById("myChart5");
-
-for (let c of [ctx4, ctx5]) {
-    new Chart(c, {
-        type: "line",
-        data: {
-            labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
-            datasets: [
-                {
-                    label: "# of Votes",
-                    data: [12, 19, 3, 5, 2, 3],
-                    borderWidth: 1,
-                },
-            ],
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true,
-                },
-            },
-        },
     });
 }

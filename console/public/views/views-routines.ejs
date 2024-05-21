@@ -1,16 +1,27 @@
 <header id="main-content-heading">
-    <h1>Routines View</h1>
-    <p>The following view shows the list of registered routines.</p>
+    <h1>Представление рутин</h1>
+    <p>
+        Данное представление отображает список зарегистрированных 
+        рутин данных с возможностью добавления новых.
+    </p>
+    <p>
+        Рутина представляет собой сущность, которая описывает правило, 
+        по которому осуществляется сбор и обработка данных на стороне обработчика.
+        Рутина хранит информацию о сессии обработчика и о собираемых метриках.
+    </p>
+    <p>
+        Рутина может войти в состояние "поломки" при нескольих неудачных запросах к обработчику.
+        Для восстановления работы рутины необходимо перезапустить ее, нажав на конопку перезапуска.
+    </p>
 </header>
 
 <main id="main-content-view">
-    <h2>Register New Routine</h2>
+    <h2>Зарегистрируйте новую рутину</h2>
     <p>
-        Add a new routine to the controller by selecting given options in the
-        form below.
+        Заполните необходимые поля ниже.
     </p>
     <div id="register-routine-container" class="card-container"></div>
-    <h2>Registered Routines</h2>
+    <h2>Зарегистрированные рутины</h2>
     <p>The following view shows cards of registered routines</p>
     <div id="routine-cards-container" class="card-container"></div>
 </main>

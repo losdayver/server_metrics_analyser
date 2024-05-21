@@ -2,12 +2,12 @@
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
+    min-height: 360px;
 }
 
 .chart {
     padding: 20px;
     margin: 20px;
-    height: 300px;
     flex: 1;
 
     flex-direction: column;
@@ -15,6 +15,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+#total_incidents_by_cluster {
+    height: 250px !important;
+    width: 250px !important;
 }
 
 .chart canvas {

@@ -1,8 +1,6 @@
 var algorithmOptions = [
-    { value: "none", text: "none" },
+    { value: "none", text: "ничего" },
     { value: "linearRegression", text: "linearRegression" },
-    { value: "option2", text: "Option 2" },
-    { value: "option3", text: "Option 3" }
 ];
 
 // data is an array of [xi, yi] values
@@ -51,11 +49,11 @@ async function loadLinearRegression() {
 
     $(form).append($("<label>", {
         for: "linear-regression-cluster-select"
-    })).html("Select a cluster: ").append($(clusterSelect));
+    })).html("Выберите кластер: ").append($(clusterSelect));
 
     $(clusterSelect).append($("<option>", {
         value: "none",
-        text: "none"
+        text: "ничего"
     }));
 
     clusterResponse.forEach((cluster) => {
@@ -81,7 +79,7 @@ async function loadLinearRegression() {
         // this is cluster whih was been created
         let cluster = clusterResponse.find((cluster) => cluster.identifier === $(clusterSelect).val())
 
-        $(settingsContainer).append($("<label>").html("Select hosts: "));
+        $(settingsContainer).append($("<label>").html("Отметьте необходимые хосты: "));
 
         // add all host checkboxes for hosts
         cluster.hosts.forEach((host) => {
@@ -93,7 +91,7 @@ async function loadLinearRegression() {
                 })));
         });
 
-        $(settingsContainer).append($("<label>").html("Select dials: "));
+        $(settingsContainer).append($("<label>").html("Выберите метрики: "));
 
         // add all host checkboxes dials
         cluster.dials.forEach((dial) => {
@@ -165,7 +163,7 @@ async function loadLinearRegression() {
             var formFilteredIncidents = incidetResponse.filter(incident => {
                 return checkedHosts.includes(incident.HostName) &&
                     checkedDials.includes(incident.Dial.Name) &&
-
+                    incident.AdapterIdentifier === cluster.identifier &&
                     (new Date($(dateStart).val()) <= new Date(incident.DateTime) &&
                         new Date($(dateEnd).val()) >= new Date(incident.DateTime));
             });
@@ -238,25 +236,25 @@ async function loadLinearRegression() {
             var modalContents = $("<div>");
 
             modalContents
-                .append($("<h1>Expected incident rate</h1>"))
+                .append($("<h1>Прямая линейной регрессии по количеству инцидентов</h1>"))
                 .append($(chart_ctx))
-                .append($(`<h2>Start date: ${$(dateStart).val()}</h2>`))
-                .append($(`<h2>End date: ${$(dateEnd).val()}</h2>`))
-                .append($("<h2>Listed hosts: </h2>"));
+                .append($(`<h2>Начальная дата: ${$(dateStart).val()}</h2>`))
+                .append($(`<h2>Конечная дата: ${$(dateEnd).val()}</h2>`))
+                .append($("<h2>Хосты: </h2>"));
 
             checkedHosts.forEach((host) => {
                 modalContents.append($(`<p>${host}</p>`))
             });
 
             modalContents
-                .append($("<h2>Listed Dials: </h2>"))
+                .append($("<h2>Метрики: </h2>"))
 
             checkedDials.forEach((dial) => {
                 modalContents.append($(`<p>${dial}</p>`))
             });
 
             modalContents
-                .append($(`<h2>Slope coefficient: ~${b2.toFixed(7)}</h2>`))
+                .append($(`<h2>Коэффициент регрессии: ~${b2.toFixed(7)}</h2>`))
 
             showMainModal(modalContents);
         });

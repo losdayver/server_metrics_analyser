@@ -87,11 +87,11 @@ async function setupIncidentsPageNumberForm() {
     const form = $("#incident-page-form");
     const pageInput = $("#incident-page-form-number");
 
-    $(pageInput).attr("placeholder", "Total " + pagesNum + " pages");
+    $(pageInput).attr("placeholder", "Всего страниц: " + pagesNum);
 
     $(form).on("submit", function () {
         event.preventDefault();
-        var pageNum = $(pageInput).val() ? $(pageInput).val() : 1;
+        var pageNum = $(pageInput).val() ? ($(pageInput).val() === 0 ? 1 : $(pageInput).val()) : 1;
         window.location.href = CONSOLE_URL + "views-incidents?" +
             `from=${(pageNum - 1) * 20}` + `&to=${(pageNum - 1) * 20 + 20}`;
     });

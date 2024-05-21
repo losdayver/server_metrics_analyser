@@ -38,37 +38,37 @@
                 <h1>Меню</h1>
                 <ul>
 
-                    <li <% if (mainContatentPageName === "dashboard") { %>
+                    <li <% if (mainContatentPageName === "views-dashboard") { %>
                             class="main-sidebar-li-checked"   
                         <% } %>>
-                        <a href="<%= proxy %>/views-dashboard">Dashboard</a>
+                        <a href="<%= proxy %>/views-dashboard">Дашборд</a>
                     </li>
 
                     <li <% if (mainContatentPageName === "views") { %>
                             class="main-sidebar-li-checked"   
                         <% } %>>
                         <details open>
-                            <summary>Views</summary>
+                            <summary>Представления</summary>
                             <ul>
                                 <li <% if (mainContatentPageName === "views-adapters") { %>
                                         class="main-sidebar-li-checked"   
                                     <% } %>>
-                                    <a href="<%= proxy %>/views-adapters">Adapters</a>
+                                    <a href="<%= proxy %>/views-adapters">Адаптеры</a>
                                 </li>
                                 <li <% if (mainContatentPageName === "views-workers") { %>
                                         class="main-sidebar-li-checked"   
                                     <% } %>>
-                                    <a href="<%= proxy %>/views-workers">Workers</a>
+                                    <a href="<%= proxy %>/views-workers">Обработчики</a>
                                 </li>
                                 <li <% if (mainContatentPageName === "views-routines") { %>
                                         class="main-sidebar-li-checked"   
                                     <% } %>>
-                                    <a href="<%= proxy %>/views-routines">Routines</a>
+                                    <a href="<%= proxy %>/views-routines">Рутины</a>
                                 </li>
                                 <li <% if (mainContatentPageName === "views-incidents") { %>
                                         class="main-sidebar-li-checked"   
                                     <% } %>>
-                                    <a href="<%= proxy %>/views-incidents?from=0&to=20">Incidents</a>
+                                    <a href="<%= proxy %>/views-incidents?from=0&to=20">Инциденты</a>
                                 </li>
                             </ul>
                         </details>  
@@ -77,13 +77,13 @@
                     <li <% if (mainContatentPageName === "views-report") { %>
                             class="main-sidebar-li-checked"   
                         <% } %>>
-                        <a href="<%= proxy %>/views-report">Report</a>
+                        <a href="<%= proxy %>/views-report">Отчетность</a>
                     </li>
 
                     <li <% if (mainContatentPageName === "views-authenticate") { %>
                             class="main-sidebar-li-checked"   
                         <% } %>>
-                    <a href="<%= proxy %>/views-authenticate">Authenticate</a>
+                    <a href="<%= proxy %>/views-authenticate">Аутентификация</a>
                 </li>
                 </ul>
             </nav>

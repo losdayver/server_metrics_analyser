@@ -2,9 +2,9 @@ function createAdapterCard(adapter) {
     var adapterCardWrapper = $("<div>", { class: "contents-card-wrapper" });
 
     var infoLineDead = $("<div>", { class: "contents-card-info-line" }).html(`
-        <div>Dead: </div>
+        <div>Доступен: </div>
         <div class="contents-card-info-line-status">
-            <div>${adapter.dead}</div>
+            <div>${!adapter.dead ? "Да" : "Нет"}</div>
             <div 
                 class="contents-card-info-line-indicator"
                 style="background-color: ${adapter.dead ? "#F00" : "#0A0"};"
@@ -15,12 +15,12 @@ function createAdapterCard(adapter) {
 
     var infoLineHostName = $("<div>", { class: "contents-card-info-line" })
         .html(`
-        <div>Host Name: </div>
+        <div>Имя хоста: </div>
         <div>${adapter.hostName}</div>
     `);
 
     var infoLinePort = $("<div>", { class: "contents-card-info-line" }).html(`
-        <div>Port: </div>
+        <div>Порт: </div>
         <div>${adapter.port}/TCP</div>
     `);
 
@@ -39,20 +39,20 @@ function createAdapterCard(adapter) {
 
 function createClusterCard(cluster) {
     var modalContents = $("<div></div>").append(
-        `<h2>${cluster.identifier}</h2>`
+        `<h1>${cluster.identifier}</h1>`
     );
 
-    modalContents.append("<h3>Dials:</h3>");
+    modalContents.append("<h2>Метрики:</h2>");
 
     for (let dial of cluster.dials) {
         modalContents
-            .append(`<h4>${dial.Name}</h4>`)
-            .append(`<p>Unit: ${dial.Unit}</p>`)
-            .append(`<p>Threshold: ${dial.Threshold}</p>`)
-            .append(`<p>Run Count: ${dial.RunCount}</p>`);
+            .append(`<h3>${dial.Name}</h3>`)
+            .append(`<p>Величина: ${dial.Unit}</p>`)
+            .append(`<p>Порог: ${dial.Threshold}</p>`)
+            .append(`<p>размер окна: ${dial.RunCount}</p>`);
     }
 
-    modalContents.append("<h3>Hosts:</h3>");
+    modalContents.append("<h2>Хосты:</h2>");
 
     for (let host of cluster.hosts) {
         modalContents.append(`<h4>${host.HostName}</h4>`);
@@ -75,7 +75,7 @@ function createClusterCard(cluster) {
 function createRegisterAdapterFormCard() {
     var form = $("<form>")
         .append(
-            $("<label>Host Name: </label>", {
+            $("<label>Имя хоста: </label>", {
                 for: "register-adapter-container-hostname",
             })
         )
@@ -87,7 +87,7 @@ function createRegisterAdapterFormCard() {
             })
         )
         .append(
-            $("<label>Port: </label>", {
+            $("<label>Порт: </label>", {
                 for: "register-adapter-container-port",
             })
         )
@@ -137,7 +137,7 @@ function createRegisterAdapterFormCard() {
 
     $(form).append(input);
 
-    return createCard("Register New Adapter", form, null, false);
+    return createCard("Форма регистрации адаптера", form, null, false);
 }
 
 async function updateClusters() {

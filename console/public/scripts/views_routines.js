@@ -2,7 +2,7 @@ async function createRegisterRoutineFormCard() {
     {
         var form = $("<form>")
             .append(
-                $("<label>Cluster Identifier: </label>", {
+                $("<label>Идентификатор кластера: </label>", {
                     for: "register-routine-container-identifier",
                 })
             )
@@ -13,7 +13,7 @@ async function createRegisterRoutineFormCard() {
                 })
             )
             .append(
-                $("<label>Dial: </label>", {
+                $("<label>Метрика: </label>", {
                     for: "register-routine-container-dial",
                 })
             )
@@ -24,7 +24,7 @@ async function createRegisterRoutineFormCard() {
                 })
             )
             .append(
-                $("<label>Host: </label>", {
+                $("<label>Имя хоста: </label>", {
                     for: "register-routine-container-host",
                 })
             )
@@ -35,7 +35,7 @@ async function createRegisterRoutineFormCard() {
                 })
             )
             .append(
-                $("<label>Worker: </label>", {
+                $("<label>Обработчик: </label>", {
                     for: "register-routine-container-worker",
                 })
             )
@@ -169,7 +169,7 @@ async function createRegisterRoutineFormCard() {
             updateRoutines();
         });
 
-    return createCard("Register New Routine", form, null, false);
+    return createCard("Форма регистрации рутины", form, null, false);
 }
 
 function createRoutineCard(routine) {
@@ -178,9 +178,9 @@ function createRoutineCard(routine) {
 
     var infoLineEnabled = $("<div>", { class: "contents-card-info-line" })
         .html(`
-        <div>Enabled: </div>
+        <div>Активирована: </div>
         <div class="contents-card-info-line-status">
-            <div>${routine.enabled}</div>
+            <div>${routine.enabled ? "Да" : "Нет"}</div>
             <div 
                 class="contents-card-info-line-indicator"
                 style="background-color: ${routine.enabled ? "#0A0" : "#F00"};"
@@ -190,9 +190,9 @@ function createRoutineCard(routine) {
     `);
 
     var infoLineBroken = $("<div>", { class: "contents-card-info-line" }).html(`
-        <div>Broken: </div>
+        <div>Фактичесое выполнение: </div>
         <div class="contents-card-info-line-status">
-            <div>${routine.broken}</div>
+            <div>${!routine.broken ? "Штатный режим" : "Возникла проблема, требуется перезапуск"}</div>
             <div 
                 class="contents-card-info-line-indicator"
                 style="background-color: ${routine.broken ? "#F00" : "#0A0"};"
@@ -203,16 +203,16 @@ function createRoutineCard(routine) {
 
     var infoLineIdentifier = $("<div>", { class: "contents-card-info-line" })
         .html(`
-        <div>Cluster Identifier: </div>
+        <div>Идентификатор кластера: </div>
         <div>${routine.clusterIdentifier}</div>
     `);
 
     var infoLineWorker = $("<div>", { class: "contents-card-info-line" }).html(
-        "<div>Worker: </div>"
+        "<div>Обработчик: </div>"
     );
 
     var infoLineDials = $("<div>", { class: "contents-card-info-line" }).html(
-        "<div>Dials: </div>"
+        "<div>Список метрик: </div>"
     );
 
     var infoLineSessionID = $("<div>", {
@@ -222,7 +222,7 @@ function createRoutineCard(routine) {
         <div>${routine.sessionID}</div>
     `);
 
-    var kickstartButton = $("<button>Kickstart Routine</button>");
+    var kickstartButton = $("<button>Перезапустить</button>").attr("class", "card-button");
     $(kickstartButton).on("click", function () {
         fetch(CONTROLLER_API_URL + "routines/kickstart", {
             mode: "cors",
@@ -244,10 +244,6 @@ function createRoutineCard(routine) {
             });
     });
 
-    var infoLineKickstartButton = $("<div>", { class: "contents-card-info-line" }).html(
-        $(kickstartButton)
-    );
-
     $(routineCardWrapper)
         .append(infoLineBroken)
         .append(infoLineEnabled)
@@ -265,7 +261,7 @@ function createRoutineCard(routine) {
                 html: createDialsCard(routine.dials),
             })
         )
-        .append(infoLineKickstartButton);
+        .append(kickstartButton);
 
     var card = createCard(
         `${routine.sessionID}`,
