@@ -6,6 +6,12 @@
     display: none;  /* Safari and Chrome */
 }
 
+button {
+    border: none;
+    padding: 10px;
+    font-size: 20px;
+}
+
 input, button, select, img {
     border-radius: 10px;
     cursor: pointer;
@@ -53,7 +59,7 @@ input:active, button:active {
     border-radius: 10px; 
 }
 
-input, select {
+input, select, button {
     box-shadow: 0 0 2px rgba(0, 0, 0, 0.6) inset;
 }
 

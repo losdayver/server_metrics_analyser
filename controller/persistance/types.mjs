@@ -41,6 +41,7 @@ class Routine {
         this.sessionID = sessionID;
         this.executing = false;
         this.enabled = true;
+
         this.failureCounter = new FailureCounter(5);
     }
 
@@ -124,6 +125,7 @@ class Worker {
         } catch (err) {
             this.failureCounter.increase();
             adapter.failureCounter.increase();
+            throw new Error();
         }
     }
 
@@ -158,7 +160,7 @@ class Worker {
             );
             this.failureCounter.reset();
         } catch (err) {
-            this.failureCounter.reset();
+            this.failureCounter.increase();
         }
     }
 }

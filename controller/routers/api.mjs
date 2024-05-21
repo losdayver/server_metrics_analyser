@@ -71,6 +71,18 @@ router
             });
     });
 
+router
+    .route("/routines/kickstart")
+    .post((req, res) => {
+        state.kickStartRoutine(req.body.sessionID)
+            .then(() => {
+                res.status(200).send("successfully kickstarted routine");
+            })
+            .catch((err) => {
+                res.status(400).send(err.message);
+            });
+    });
+
 router.route("/incidents").get((req, res) => {
     const { from, to } = req.query;
 

@@ -33,6 +33,7 @@ class State {
         this.incidentsFetchLoopRunning = false;
         this.DBInsertLoopRunning = false;
         this.testAliveLoopRunning = false;
+        this.backupLoopRunning = false;
     }
 
     getWorkers() {
@@ -306,7 +307,7 @@ class State {
 
     async runRoutines() {
         for (let routine of [...this.routines]) {
-            if (!routine.broken) {
+            if (routine.failureCounter.test()) {
                 let cluster = this.clusters.find(
                     (cluster) =>
                         cluster.identifier === routine.clusterIdentifier
@@ -319,6 +320,22 @@ class State {
                 // Executing routine
                 routine.execute(randomAdapter);
             }
+        }
+    }
+
+    async kickStartRoutine(sessionID) {
+        const releaseRoutines = await this.routinesMutex.acquire();
+        try {
+            var routine = this.routines.find(routine => routine.sessionID === sessionID);
+
+            if (routine) {
+                routine.failureCounter.reset();
+            }
+        } catch {
+            throw new Error("kickstart failed");
+        }
+        finally {
+            releaseRoutines();
         }
     }
 
@@ -407,6 +424,10 @@ class State {
         }
 
         release();
+    }
+
+    async startBackupLoop() {
+
     }
 }
 

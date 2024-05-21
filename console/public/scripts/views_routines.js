@@ -222,6 +222,32 @@ function createRoutineCard(routine) {
         <div>${routine.sessionID}</div>
     `);
 
+    var kickstartButton = $("<button>Kickstart Routine</button>");
+    $(kickstartButton).on("click", function () {
+        fetch(CONTROLLER_API_URL + "routines/kickstart", {
+            mode: "cors",
+            method: "post",
+            body: JSON.stringify({
+                sessionID: routine.sessionID,
+            }),
+            headers: {
+                "content-type": "application/json",
+            }
+        })
+            .then((data) => data.text())
+            .then((data) => {
+                showMainModal(data);
+                updateRoutines();
+            })
+            .catch((err) => {
+                showMainModal(err.message);
+            });
+    });
+
+    var infoLineKickstartButton = $("<div>", { class: "contents-card-info-line" }).html(
+        $(kickstartButton)
+    );
+
     $(routineCardWrapper)
         .append(infoLineBroken)
         .append(infoLineEnabled)
@@ -238,7 +264,8 @@ function createRoutineCard(routine) {
             $("<div>", {
                 html: createDialsCard(routine.dials),
             })
-        );
+        )
+        .append(infoLineKickstartButton);
 
     var card = createCard(
         `${routine.sessionID}`,
