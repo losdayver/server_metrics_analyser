@@ -75,10 +75,10 @@ func PostCollectDataHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	resAdapter, err := http.Post(reqBody.AdapterURL,
-		"application/json",
+	resAdapter, err := http.NewRequest("POST", reqBody.AdapterURL,
 		bytes.NewBuffer([]byte(reqAdapterBodyJson)))
-	if err != nil && resAdapter.Status != "200" {
+
+	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}

@@ -50,7 +50,7 @@ for i in {1..5}; do
     curl -X POST http://127.0.0.1:4321/api/clusters/ -d "{
         \"HostName\": \"127.0.0.1\",
         \"Port\": \"430$i\"
-    }" -H "Content-Type: application/json"
+    }" -H "Content-Type: application/json" -b "auth=temp-session"
     echo
 done
 
@@ -58,7 +58,7 @@ for i in {1..4}; do
     curl -X POST http://127.0.0.1:4321/api/workers/ -d "{
         \"HostName\": \"127.0.0.1\",
         \"Port\": \"431$i\"
-    }" -H "Content-Type: application/json"
+    }" -H "Content-Type: application/json" -b "auth=temp-session"
     echo
 done
 

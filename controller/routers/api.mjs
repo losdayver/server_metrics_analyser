@@ -9,6 +9,7 @@ const state = new State();
 
 state.startRoutineLoop();
 state.startIncidentFetchLoop();
+state.startAliveLoop();
 
 router
     .route("/clusters")
@@ -71,7 +72,13 @@ router
     });
 
 router.route("/incidents").get((req, res) => {
-    res.status(200).send(state.getIncidents());
+    const { from, to } = req.query;
+
+    res.status(200).send(state.getIncidents(from, to));
+});
+
+router.route("/incidents/length/").get((req, res) => {
+    res.status(200).send({ length: state.getIncidents().length });
 });
 
 export default router;

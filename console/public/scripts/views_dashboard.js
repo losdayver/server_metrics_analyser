@@ -12,15 +12,10 @@ $(function () {
 });
 
 async function updateDashboard() {
-    var response = await fetch(CONTROLLER_API_URL + "incidents", {
+    var response = await fetch(CONTROLLER_API_URL + "incidents" + "?from=0&to=1000", {
         mode: "cors",
     });
     var incidents = await response.json();
-
-    var response = await fetch(CONTROLLER_API_URL + "clusters", {
-        mode: "cors",
-    });
-    var clusters = await response.json();
 
     const incidentOccurrences = incidents.reduce((acc, obj) => {
         const { AdapterIdentifier } = obj;
@@ -85,6 +80,38 @@ async function updateDashboard() {
                 },
             ],
         },
+    });
+
+    const table_recent_incidents = $("#recent-incidents-table");
+
+    response = await fetch(CONTROLLER_API_URL + "incidents" + "?from=0&to=5", {
+        mode: "cors",
+    });
+    var incidents_table_list = await response.json();
+
+    $(table_recent_incidents).append(`
+    <thead>
+        <tr>
+            <th>Cluster</th>
+            <th>Host Name</th>
+            <th>Dial Name</th>
+            <th>Threshold</th>
+            <th>Measurement, Unit</th>
+        </tr>
+    </thead>
+    `);
+
+    incidents_table_list.forEach(incident => {
+        $(table_recent_incidents).append(`
+            <tr>
+                <td>${incident.AdapterIdentifier}</td>
+                <td>${incident.HostName}</td>
+                <td>${incident.Dial.Name}</td>
+                <td>${incident.Dial.Threshold}</td>
+                <td>${incident.Value.toFixed(2)} ${incident.Dial.Unit}</td>
+            </tr>
+    
+        `);
     });
 }
 

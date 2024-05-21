@@ -165,6 +165,7 @@ async function loadLinearRegression() {
             var formFilteredIncidents = incidetResponse.filter(incident => {
                 return checkedHosts.includes(incident.HostName) &&
                     checkedDials.includes(incident.Dial.Name) &&
+
                     (new Date($(dateStart).val()) <= new Date(incident.DateTime) &&
                         new Date($(dateEnd).val()) >= new Date(incident.DateTime));
             });

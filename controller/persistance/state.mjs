@@ -1,11 +1,22 @@
 import crypto from "crypto";
 import axios from "axios";
+
 import { Mutex } from "async-mutex";
+import { pgAdapter } from "./db_adapter.mjs";
+import {
+    Routine,
+    Cluster,
+    Adapter,
+    Worker
+} from "./types.mjs";
+import { clearScreenDown } from "readline";
 
 ("use strict");
 
 class State {
     constructor() {
+        this.DB = new pgAdapter();
+
         this.clusters = [];
         this.clustersMutex = new Mutex();
 
@@ -20,22 +31,59 @@ class State {
 
         this.routineLoopRunning = false;
         this.incidentsFetchLoopRunning = false;
+        this.DBInsertLoopRunning = false;
         this.testAliveLoopRunning = false;
     }
 
     getWorkers() {
-        return this.workers;
+        return this.workers.map(worker => {
+            return {
+                identifier: worker.identifier,
+                hostName: worker.hostName,
+                port: worker.port,
+                dead: !worker.failureCounter.test(),
+            };
+        });
     }
 
     getAdapters() {
-        return this.clusters;
+        return this.clusters.map(cluster => {
+            return {
+                identifier: cluster.identifier,
+                dials: cluster.dials,
+                hosts: cluster.hosts,
+                adapters: cluster.adapters.map(adapter => {
+                    return {
+                        hostName: adapter.hostName,
+                        port: adapter.port,
+                        identifier: adapter.identifier,
+                        dead: !adapter.failureCounter.test(),
+                    }
+                }),
+            };
+        });
     }
 
     getRoutines() {
-        return this.routines;
+        return this.routines.map(routine => {
+            return {
+                clusterIdentifier: routine.clusterIdentifier,
+                worker: routine.worker,
+                dials: routine.dials,
+                sessionID: routine.sessionID,
+                executing: routine.executing,
+                broken: !routine.failureCounter.test(),
+                enabled: routine.enabled,
+            };
+        });
     }
 
-    getIncidents() {
+    getIncidents(from = null, to = null) {
+        try {
+            if (from && to) {
+                return this.incidents.slice(this.incidents.length - to, this.incidents.length - from);
+            }
+        } catch { }
         return this.incidents;
     }
 
@@ -146,6 +194,7 @@ class State {
         }
     }
 
+    // thread safe
     async addRoutine(
         clusterIdentifier,
         workerHostName,
@@ -294,7 +343,7 @@ class State {
                 this.incidents = this.incidents.concat(
                     await worker.fetchIncidents()
                 );
-            } catch (err) {}
+            } catch (err) { }
         }
 
         release();
@@ -308,7 +357,7 @@ class State {
         this.testAliveLoopRunning = true;
 
         while (this.testAliveLoopRunning) {
-            await new Promise((resolve) => setTimeout(resolve, 5000));
+            await new Promise((resolve) => setTimeout(resolve, 1000));
             this.testAliveAll();
         }
     }
@@ -333,167 +382,31 @@ class State {
             releaseWorkers();
         }
     }
-}
 
-class Routine {
-    constructor(clusterIdentifier, worker, dials, sessionID) {
-        this.clusterIdentifier = clusterIdentifier;
-        this.worker = worker;
-        this.dials = dials;
-        this.sessionID = sessionID;
-        this.executing = false;
-        this.broken = false;
-        this.enabled = true;
-    }
-
-    async execute(adapter) {
-        if (this.executing) {
+    async startDBInsertLoop() {
+        if (this.DBInsertLoopRunning) {
             return;
         }
 
-        this.executing = true;
+        this.DBInsertLoopRunning = true;
 
-        try {
-            let response = await this.worker.fetchDataFromAdapter(
-                adapter,
-                this.sessionID
-            );
-            this.worker.this.callIfGoodResponse();
-            return response;
-        } catch (err) {
-            // TODO change this behaviour to multiple tries
-            if (
-                this.worker.badResponseCounter ===
-                this.worker.badResponseCounterMax
-            ) {
-                this.broken = true;
-            }
-        } finally {
-            this.executing = false;
-        }
-    }
-}
-
-class Cluster {
-    constructor(identifier, dials, hosts, adapters) {
-        this.identifier = identifier;
-        this.dials = dials;
-        this.hosts = hosts;
-        this.adapters = adapters;
-    }
-}
-
-class Adapter {
-    constructor(hostName, port, identifier) {
-        this.hostName = hostName;
-        this.port = port;
-        this.badResponseCounter = 0;
-        this.badResponseCounterMax = 5;
-        this.dead = false;
-        this.identifier = identifier;
-    }
-
-    callIfGoodResponse() {
-        this.badResponseCounter = 0;
-    }
-
-    callIfBadResponse() {
-        this.badResponseCounter += 1;
-
-        if (this.badResponseCounter >= this.badResponseCounterMax) {
-            this.dead = true;
+        while (this.incidentsFetchLoopRunning) {
+            await new Promise((resolve) => setTimeout(resolve, 40000));
+            this.postIncidentsToDB();
         }
     }
 
-    async testAlive() {
-        try {
-            // TODO maybe add check if returned identifier is identical to object's property
-            await axios.get(
-                `http://${this.hostName}:${this.port}/api/identifier`
-            );
-            this.callIfGoodResponse();
-        } catch (err) {
-            this.callIfBadResponse();
-        }
-    }
-}
-
-class Worker {
-    constructor(hostName, port, identifier) {
-        this.hostName = hostName;
-        this.port = port;
-        this.badResponseCounter = 0;
-        this.badResponseCounterMax = 5;
-        this.dead = false;
-        this.identifier = identifier;
-    }
-
-    callIfGoodResponse() {
-        this.badResponseCounter = 0;
-    }
-
-    callIfBadResponse() {
-        this.badResponseCounter += 1;
-
-        if (this.badResponseCounter >= this.badResponseCounterMax) {
-            this.dead = true;
-        }
-    }
-
-    async fetchDataFromAdapter(adapter, sessionID) {
-        try {
-            var response = await axios({
-                method: "post",
-                url: `http://${this.hostName}:${this.port}/api/collect/data/`,
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                data: {
-                    SessionID: sessionID,
-                    AdapterURL: `http://${adapter.hostName}:${adapter.port}/api/measure/`,
-                },
-            });
-            this.callIfGoodResponse();
-            return response;
-        } catch (err) {
-            this.callIfBadResponse();
-            adapter.callIfBadResponse();
-        }
-    }
-
-    async fetchIncidents() {
-        try {
-            var incidentsResponse = await axios({
-                method: "post",
-                url: `http://${this.hostName}:${this.port}/api/incidents/`,
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            });
-
-            var incidents = incidentsResponse.data;
-
-            this.callIfGoodResponse();
-        } catch (err) {
-            this.callIfBadResponse();
-            throw new Error(
-                `failed to get incidents from worker ${this.hostName}:${this.port}`
-            );
+    async postIncidentsToDB() {
+        const release = await this.incidentsMutex.acquire();
+        for (let incident of this.incidents) {
+            try {
+                this.incidents = this.incidents.concat(
+                    await worker.fetchIncidents()
+                );
+            } catch (err) { }
         }
 
-        return incidents;
-    }
-
-    async testAlive() {
-        try {
-            // TODO maybe add check if returned identifier is identical to object's property
-            await axios.get(
-                `http://${this.hostName}:${this.port}/api/identifier`
-            );
-            this.callIfGoodResponse();
-        } catch (err) {
-            this.callIfBadResponse();
-        }
+        release();
     }
 }
 

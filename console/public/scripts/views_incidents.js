@@ -67,7 +67,7 @@ function createIncident(incident) {
 async function updateIncidents() {
     $("#incident-list-container").find("*").remove();
 
-    var response = await fetch(CONTROLLER_API_URL + "incidents");
+    var response = await fetch(CONTROLLER_API_URL + "incidents" + window.location.search);
 
     var data = await response.json();
 
@@ -77,6 +77,27 @@ async function updateIncidents() {
     }
 }
 
+async function setupIncidentsPageNumberForm() {
+    const response = await fetch(CONTROLLER_API_URL + "incidents/length/");
+
+    const length = (await response.json()).length;
+
+    const pagesNum = Math.floor(length / 20);
+
+    const form = $("#incident-page-form");
+    const pageInput = $("#incident-page-form-number");
+
+    $(pageInput).attr("placeholder", "Total " + pagesNum + " pages");
+
+    $(form).on("submit", function () {
+        event.preventDefault();
+        var pageNum = $(pageInput).val() ? $(pageInput).val() : 1;
+        window.location.href = CONSOLE_URL + "views-incidents?" +
+            `from=${(pageNum - 1) * 20}` + `&to=${(pageNum - 1) * 20 + 20}`;
+    });
+}
+
 $(function () {
     updateIncidents();
+    setupIncidentsPageNumberForm();
 });

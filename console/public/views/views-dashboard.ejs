@@ -1,0 +1,38 @@
+<header id="main-content-heading">
+    <h1>Main Dashboard</h1>
+    <p>This is the main dashboard that shows essential monitoring data.</p>
+</header>
+
+<main id="main-content-view">
+    <div class="chart-cluster">
+        <div class="chart">
+            <p>Number of Incidents in Time</p>
+            <canvas id="number_of_incidents_in_time"></canvas>
+        </div>
+    </div>
+    <div class="chart-cluster">
+        <div class="chart">
+            <p>Total Recent Incidents (up to a 1000)</p>
+            <canvas id="total_incidents_by_cluster"></canvas>
+        </div>
+    </div>
+    <div class="chart-cluster">
+        <div class="chart">
+            <p>Recent Incidents</p>
+            <table id="recent-incidents-table">
+            </table>
+        </div>
+    </div>
+    <!-- <div class="chart-cluster">
+        <div class="chart">
+            <p>Data Chart</p>
+            <canvas id="myChart4"></canvas>
+        </div>
+        <div class="chart">
+            <p>Data Chart</p>
+            <canvas id="myChart5"></canvas>
+        </div>
+    </div> -->
+</main>
+
+<script src="scripts/views_dashboard.js"></script>

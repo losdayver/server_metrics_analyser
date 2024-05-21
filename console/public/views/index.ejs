@@ -37,28 +37,17 @@
             <nav id="main-sidebar">
                 <h1>Меню</h1>
                 <ul>
-                    <li <% if (mainContatentPageName === "welcome") { %>
-                            class="main-sidebar-li-checked"   
-                        <% } %>>
-                        <a href="<%= proxy %>/welcome">Welcome</a>
-                    </li>
 
                     <li <% if (mainContatentPageName === "dashboard") { %>
                             class="main-sidebar-li-checked"   
                         <% } %>>
-                        <a href="<%= proxy %>/dashboard">Dashboard</a>
+                        <a href="<%= proxy %>/views-dashboard">Dashboard</a>
                     </li>
 
                     <li <% if (mainContatentPageName === "views") { %>
                             class="main-sidebar-li-checked"   
                         <% } %>>
-                        <details <% if (["views-adapters", 
-                                        "views-workers",
-                                        "views-routines",
-                                        "views-incidents"]
-                                        .includes(mainContatentPageName)) { %>
-                                    open
-                                <% } %>>
+                        <details open>
                             <summary>Views</summary>
                             <ul>
                                 <li <% if (mainContatentPageName === "views-adapters") { %>
@@ -79,7 +68,7 @@
                                 <li <% if (mainContatentPageName === "views-incidents") { %>
                                         class="main-sidebar-li-checked"   
                                     <% } %>>
-                                    <a href="<%= proxy %>/views-incidents">Incidents</a>
+                                    <a href="<%= proxy %>/views-incidents?from=0&to=20">Incidents</a>
                                 </li>
                             </ul>
                         </details>  
@@ -89,12 +78,6 @@
                             class="main-sidebar-li-checked"   
                         <% } %>>
                         <a href="<%= proxy %>/views-report">Report</a>
-                    </li>
-
-                    <li <% if (mainContatentPageName === "views-help") { %>
-                            class="main-sidebar-li-checked"   
-                        <% } %>>
-                        <a href="#">Help</a>
                     </li>
 
                     <li <% if (mainContatentPageName === "views-authenticate") { %>
