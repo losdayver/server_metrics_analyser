@@ -121,7 +121,6 @@ class Worker {
                 },
             });
             this.failureCounter.reset();
-            return response;
         } catch (err) {
             this.failureCounter.increase();
             adapter.failureCounter.increase();

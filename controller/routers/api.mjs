@@ -10,6 +10,7 @@ const state = new State();
 state.startRoutineLoop();
 state.startIncidentFetchLoop();
 state.startAliveLoop();
+state.startDBInsertLoop();
 
 router
     .route("/clusters")

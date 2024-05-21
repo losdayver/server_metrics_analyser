@@ -69,7 +69,12 @@ class State {
         return this.routines.map(routine => {
             return {
                 clusterIdentifier: routine.clusterIdentifier,
-                worker: routine.worker,
+                worker: {
+                    identifier: routine.worker.identifier,
+                    hostName: routine.worker.hostName,
+                    port: routine.worker.port,
+                    dead: !routine.worker.failureCounter.test(),
+                },
                 dials: routine.dials,
                 sessionID: routine.sessionID,
                 executing: routine.executing,
@@ -360,7 +365,8 @@ class State {
                 this.incidents = this.incidents.concat(
                     await worker.fetchIncidents()
                 );
-            } catch (err) { }
+            } catch (err) {
+            }
         }
 
         release();
@@ -407,21 +413,19 @@ class State {
 
         this.DBInsertLoopRunning = true;
 
-        while (this.incidentsFetchLoopRunning) {
-            await new Promise((resolve) => setTimeout(resolve, 40000));
+        while (this.DBInsertLoopRunning) {
+            await new Promise((resolve) => setTimeout(resolve, 5000));
             this.postIncidentsToDB();
         }
     }
 
     async postIncidentsToDB() {
         const release = await this.incidentsMutex.acquire();
-        for (let incident of this.incidents) {
-            try {
-                this.incidents = this.incidents.concat(
-                    await worker.fetchIncidents()
-                );
-            } catch (err) { }
-        }
+
+        try {
+            await this.DB.uploadIncidents(this.incidents.slice(0, 1000));
+            //this.incidents = this.incidents.slice(1000, this.incidents.length);
+        } catch (err) { }
 
         release();
     }

@@ -75,13 +75,16 @@ func PostCollectDataHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	resAdapter, err := http.NewRequest("POST", reqBody.AdapterURL,
+	req, _ := http.NewRequest("POST", reqBody.AdapterURL,
 		bytes.NewBuffer([]byte(reqAdapterBodyJson)))
 
+	client := &http.Client{}
+	resAdapter, err := client.Do(req);
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+	//{{"HostName":"host1","DialNames":["Proc_All_%"]}} 0x62a140 47 [] false 127.0.0.1:4301 map[] map[] <nil> map[]   <nil> <nil> <nil> {{}} <nil> [] map[]}
 
 	postAdapterMeasureBodyRes, err := io.ReadAll(resAdapter.Body)
 	if err != nil {
